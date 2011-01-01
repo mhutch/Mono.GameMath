@@ -24,19 +24,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
+using System.Runtime.InteropServices;
+
+#if SIMD
+using Mono.Simd;
+#endif
 
 namespace Mono.GameMath
 {
 	[Serializable]
 	public struct Vector4 : IEquatable<Vector4>
 	{
-		public float X, Y, Z, W;
+#if SIMD
+		internal Vector4f v4;
+		public float X { get { return v4.X; } set { v4.X = value; } }
+		public float Y { get { return v4.Y; } set { v4.Y = value; } }
+		public float Z { get { return v4.Z; } set { v4.Z = value; } }
+		public float W { get { return v4.W; } set { v4.W = value; } }
+		Vector4 (Vector4f v4) { this.v4 = v4; }
+#else
+		internal float x, y, z, w;
+		public float X { get { return x; } set { x = value; } }
+		public float Y { get { return y; } set { y = value; } }
+		public float Z { get { return z; } set { z = value; } }
+		public float W { get { return w; } set { w = value; } }
+#endif
 		
 		#region Constructors
 		
-		public Vector4 (float value) : this (value, value, value, value)
+		public Vector4 (float value)
+#if SIMD
+		{
+			v4 = new Vector4f (value);
+		}
+#else
+		: this (value, value, value, value)
 		{
 		}
+#endif
 		
 		public Vector4 (Vector2 value, float z, float w) : this (value.X, value.Y, z, w)
 		{
@@ -48,10 +73,14 @@ namespace Mono.GameMath
 		
 		public Vector4 (float x, float y, float z, float w)
 		{
-			X = x;
-			Y = y;
-			Z = z;
-			W = w;
+#if SIMD
+			v4 = new Vector4f (x, y, z, w);
+#else
+			this.x = x;
+			this.y = y;
+			this.z = z;
+			this.w = w;
+#endif
 		}
 		
 		#endregion
@@ -88,100 +117,149 @@ namespace Mono.GameMath
 		
 		public static Vector4 Add (Vector4 value1, Vector4 value2)
 		{
-			Add (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+			return new Vector4 (value1.v4 + value2.v4);
+#else
+			return new Vector4 (value1.X + value2.X, value1.Y + value2.Y, value1.Z + value2.Z, value1.W + value2.W);
+#endif
 		}
 		
 		public static void Add (ref Vector4 value1, ref Vector4 value2, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 + value2.v4;
+#else
 			result.X = value1.X + value2.X;
 			result.Y = value1.Y + value2.Y;
 			result.Z = value1.Z + value2.Z;
-			result.W = value1.Z + value2.W;
+			result.W = value1.W + value2.W;
+#endif
 		}
 		
 		public static Vector4 Divide (Vector4 value1, float value2)
 		{
-			Divide (ref value1, value2, out value1);
-			return value1;
+#if SIMD
+			return new Vector4 (value1.v4 / new Vector4f (value2));
+#else
+			return new Vector4 (value1.X / value2, value1.Y / value2, value1.Z / value2, value1.W / value2);
+#endif
 		}
 		
 		public static void Divide (ref Vector4 value1, float divider, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 / new Vector4f (divider);
+#else
 			result.X = value1.X / divider;
 			result.Y = value1.Y / divider;
 			result.Z = value1.Z / divider;
 			result.W = value1.W / divider;
+#endif
 		}
 		
 		public static Vector4 Divide (Vector4 value1, Vector4 value2)
 		{
-			Divide (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+			return new Vector4 (value1.v4 / value2.v4);
+#else
+			return new Vector4 (value1.X / value2.X, value1.Y / value2.Y, value1.Z / value2.Z, value1.W / value2.W);
+#endif
 		}
 		
 		public static void Divide (ref Vector4 value1, ref Vector4 value2, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 / value2.v4;
+#else
 			result.X = value1.X / value2.X;
 			result.Y = value1.Y / value2.Y;
 			result.Z = value1.Z / value2.Z;
 			result.W = value1.W / value2.W;
+#endif
 		}
 		
 		public static Vector4 Multiply (Vector4 value1, float scaleFactor)
 		{
-			Multiply (ref value1, scaleFactor, out value1);
-			return value1;
+#if SIMD
+			return new Vector4 (value1.v4 * new Vector4f (scaleFactor));
+#else
+			return new Vector4 (value1.X * scaleFactor, value1.Y * scaleFactor, value1.Z * scaleFactor, value1.W * scaleFactor);
+#endif
 		}
 		
 		public static void Multiply (ref Vector4 value1, float scaleFactor, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 * new Vector4f (scaleFactor);
+#else
 			result.X = value1.X * scaleFactor;
 			result.Y = value1.Y * scaleFactor;
 			result.Z = value1.Z * scaleFactor;
 			result.W = value1.W * scaleFactor;
+#endif
 		}
 		
 		public static Vector4 Multiply (Vector4 value1, Vector4 value2)
 		{
-			Multiply (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+		return new Vector4 (value1.v4 * value2.v4);	
+#else
+		return new Vector4 (value1.X * value2.X, value1.Y * value2.Y, value1.Z * value2.Z, value1.W * value2.W);
+#endif
 		}
 		
 		public static void Multiply (ref Vector4 value1, ref Vector4 value2, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 * value2.v4;
+#else
 			result.X = value1.X * value2.X;
 			result.Y = value1.Y * value2.Y;
 			result.Z = value1.Z * value2.Z;
 			result.W = value1.W * value2.W;
+#endif
 		}
 		
 		public static Vector4 Negate (Vector4 value)
 		{
-			Negate (ref value, out value);
-			return value;
+#if SIMD
+			return new Vector4 (value.v4 ^ new Vector4f (-0.0f));
+#else
+			return new Vector4 (- value.X, - value.Y, - value.Z, - value.W);
+#endif
 		}
 		
 		public static void Negate (ref Vector4 value, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value.v4 ^ new Vector4f (-0.0f);
+#else
 			result.X = - value.X;
 			result.Y = - value.Y;
 			result.Z = - value.Z;
 			result.W = - value.W;
+#endif
 		}
 		
 		public static Vector4 Subtract (Vector4 value1, Vector4 value2)
 		{
-			Subtract (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+			return new Vector4 (value1.v4 - value2.v4);
+#else
+			return new Vector4 (value1.X - value2.X, value1.Y - value2.Y, value1.Z - value2.Z, value1.W - value2.W);
+#endif
 		}
 		
 		public static void Subtract (ref Vector4 value1, ref Vector4 value2, out Vector4 result)
 		{
+#if SIMD
+			result.v4 = value1.v4 - value2.v4;
+#else
 			result.X = value1.X - value2.X;
 			result.Y = value1.Y - value2.Y;
 			result.Z = value1.Z - value2.Z;
 			result.W = value1.W - value2.W;
+#endif
 		}
 		
 		#endregion

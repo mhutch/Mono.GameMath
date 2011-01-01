@@ -25,6 +25,10 @@
 // THE SOFTWARE.
 using System;
 
+#if SIMD
+using Mono.Simd;
+#endif
+
 namespace Mono.GameMath
 {
 	[Serializable]
@@ -87,26 +91,46 @@ namespace Mono.GameMath
 		
 		public static Vector2 Multiply (Vector2 value1, float scaleFactor)
 		{
-			Multiply (ref value1, scaleFactor, out value1);
-			return value1;
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X * scaleFactor, value1.Y * scaleFactor);
+#endif
 		}
 		
 		public static void Multiply (ref Vector2 value1, float scaleFactor, out Vector2 result)
 		{
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			result.X = v4.X;
+			result.Y = v4.Y;
+#else
 			result.X = value1.X * scaleFactor;
 			result.Y = value1.Y * scaleFactor;
+#endif
 		}
 		
 		public static Vector2 Multiply (Vector2 value1, Vector2 value2)
 		{
-			Multiply (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X * value2.X, value1.Y * value2.Y);
+#endif
 		}
 		
 		public static void Multiply (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
+			result.X = v4.X;
+			result.Y = v4.Y;
+#else
 			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.X;
+			result.Y = value1.Y * value2.Y;
+#endif
 		}
 		
 		public static Vector2 Negate (Vector2 value)
@@ -123,26 +147,46 @@ namespace Mono.GameMath
 		
 		public static Vector2 Divide (Vector2 value1, float divider)
 		{
-			Divide (ref value1, divider, out value1);
-			return value1;
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (divider);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X / divider, value1.Y / divider);
+#endif
 		}
 		
 		public static void Divide (ref Vector2 value1, float divider, out Vector2 result)
 		{
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (divider);
+			result.X = v4.X;
+			result.Y = v4.Y;
+#else
 			result.X = value1.X / divider;
 			result.Y = value1.Y / divider;
+#endif
 		}
 		
 		public static Vector2 Divide (Vector2 value1, Vector2 value2)
 		{
-			Divide (ref value1, ref value2, out value1);
-			return value1;
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X / value2.X, value1.Y / value2.X);
+#endif
 		}
 		
 		public static void Divide (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = value1.X / value2.X;
-			result.Y = value1.Y / value2.X;
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
+			result.X = v4.X;
+			result.Y = v4.Y;
+#else
+			result.X = value1.X * value2.X;
+			result.Y = value1.Y * value2.X;
+#endif
 		}
 		
 		public static Vector2 Subtract (Vector2 value1, Vector2 value2)
