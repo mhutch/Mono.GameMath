@@ -3,18 +3,29 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.GameMath", "Mono.GameMath\Mono.GameMath.csproj", "{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{5A022A72-8858-4BCB-8380-7522C35E0006}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Safe|Any CPU = Safe|Any CPU
+		Unsafe|Any CPU = Unsafe|Any CPU
+		Simd|Any CPU = Simd|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Safe|Any CPU.Build.0 = Safe|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Simd|Any CPU.ActiveCfg = Simd|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Simd|Any CPU.Build.0 = Simd|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.Build.0 = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.ActiveCfg = Simd|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.Build.0 = Simd|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = Mono.GameMath\Mono.GameMath.csproj
+		StartupItem = Benchmark\Benchmark.csproj
 	EndGlobalSection
 EndGlobal
