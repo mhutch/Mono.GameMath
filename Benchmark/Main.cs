@@ -25,12 +25,27 @@
 // THE SOFTWARE.
 using System;
 using System.Reflection;
+using System.IO;
 
 namespace Benchmark
 {
-	class MainClass
+	class Driver
 	{
 		public static void Main (string[] args)
+		{
+			var variant = "Simd";
+			if (args.Length > 0)
+				variant = args[0];
+			
+			var thisDir = Path.GetDirectoryName (typeof (Driver).Assembly.Location);
+			var rootDir = Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (thisDir)));
+			var binDir = Path.Combine (Path.Combine (rootDir, "Mono.GameMath"), "bin");
+			var mathAssembly = Path.Combine (binDir, Path.Combine (variant, "Mono.GameMath.dll"));
+			Assembly.LoadFile (mathAssembly);
+			RunTests ();
+		}
+		
+		static void RunTests ()
 		{
 			Type[] testTypes = new [] {
 				typeof (Vector4Test),
@@ -40,6 +55,7 @@ namespace Benchmark
 			
 			int times =10 * 1000 * 1000 ;
 			var sw = new System.Diagnostics.Stopwatch ();
+			long total = 0;
 			
 			foreach (var t in testTypes) {
 				MethodInfo[] methodInfos = t.GetMethods (BindingFlags.Static | BindingFlags.Public);
@@ -55,8 +71,11 @@ namespace Benchmark
 					methods[i] (times);
 					sw.Stop ();
 					System.Console.WriteLine ("{0}.{1}: {2}", t.Name, methodInfos[i].Name, sw.ElapsedMilliseconds);
+					total += sw.ElapsedMilliseconds;
 				}
 			}
+			
+			System.Console.WriteLine ("Total: {0}", total);
 		}
 	}
 }
