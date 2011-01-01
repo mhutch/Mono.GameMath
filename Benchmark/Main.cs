@@ -62,10 +62,18 @@ namespace Benchmark
 				Action<int>[] methods = new Action<int> [methodInfos.Length];
 				for (int i = 0; i < methodInfos.Length; i++) {
 					methods[i] = (Action<int>) Delegate.CreateDelegate (typeof (Action<int>), methodInfos[i]);
-					methods[i] (1);
+					try {
+						methods[i] (1);
+					} catch (NotImplementedException) {
+						methods[i] = null;
+					}
 				}
 				
 				for (int i = 0; i < methodInfos.Length; i++) {
+					if (methods[i] == null) {
+						System.Console.WriteLine ("{0}.{1}: NotImplemented", t.Name, methodInfos[i].Name);	
+						continue;
+					}
 					sw.Reset ();
 					sw.Start ();
 					methods[i] (times);
