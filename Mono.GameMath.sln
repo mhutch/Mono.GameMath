@@ -5,6 +5,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.GameMath", "Mono.GameM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{5A022A72-8858-4BCB-8380-7522C35E0006}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{893974BE-7C97-45A3-89A4-13DA2D8616B2}"
+	ProjectSection(SolutionItems) = preProject
+		Notes\JIT_PROBLEMS_EXAMPLE.txt = Notes\JIT_PROBLEMS_EXAMPLE.txt
+		Notes\JIT_PROBLEMS.txt = Notes\JIT_PROBLEMS.txt
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Safe|Any CPU = Safe|Any CPU
@@ -24,6 +30,8 @@ Global
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.Build.0 = Simd|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Benchmark\Benchmark.csproj

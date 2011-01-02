@@ -1,0 +1,6 @@
+As of Mono 2.8.1, there are the following problems with the JIT:
+
+* the JIT handling of aligment is poor; sometimes makes functions 10x slower
+* Mono.Simd has no ref overloads, so fallbacks are unnecessarily slow
+* the JIT does not deal well with Vector4 wrapping Vector4f indirection, makes opn_Multiply 5x slower
+* on x86 the JIT uses x87 FPU, so comparisons to SSE are not fair
