@@ -884,7 +884,32 @@ namespace Mono.GameMath
 		
 		public static void Lerp (ref Matrix matrix1, ref Matrix matrix2, float amount, out Matrix result)
 		{
-			throw new NotImplementedException ();
+#if SIMD
+			result.r1 = matrix1.r1 + amount * (matrix2.r1 - matrix1.r1);
+			result.r1 = matrix1.r2 + amount * (matrix2.r2 - matrix1.r2);
+			result.r1 = matrix1.r3 + amount * (matrix2.r3 - matrix1.r3);
+			result.r1 = matrix1.r4 + amount * (matrix2.r4 - matrix1.r4);
+#else
+			result.M11 = matrix1.M11 + amount * (matrix2.M11 - matrix1.M11);
+			result.M12 = matrix1.M12 + amount * (matrix2.M12 - matrix1.M12);
+			result.M13 = matrix1.M13 + amount * (matrix2.M13 - matrix1.M13);
+			result.M14 = matrix1.M14 + amount * (matrix2.M14 - matrix1.M14);
+			
+			result.M21 = matrix1.M21 + amount * (matrix2.M21 - matrix1.M21);
+			result.M22 = matrix1.M22 + amount * (matrix2.M22 - matrix1.M22);
+			result.M23 = matrix1.M23 + amount * (matrix2.M23 - matrix1.M23);
+			result.M24 = matrix1.M24 + amount * (matrix2.M24 - matrix1.M24);
+			
+			result.M31 = matrix1.M31 + amount * (matrix2.M31 - matrix1.M31);
+			result.M32 = matrix1.M32 + amount * (matrix2.M32 - matrix1.M32);
+			result.M33 = matrix1.M33 + amount * (matrix2.M33 - matrix1.M33);
+			result.M34 = matrix1.M34 + amount * (matrix2.M34 - matrix1.M34);
+			
+			result.M41 = matrix1.M41 + amount * (matrix2.M41 - matrix1.M41);
+			result.M42 = matrix1.M42 + amount * (matrix2.M42 - matrix1.M42);
+			result.M43 = matrix1.M43 + amount * (matrix2.M43 - matrix1.M43);
+			result.M44 = matrix1.M44 + amount * (matrix2.M44 - matrix1.M44);
+#endif
 		}
 		
 		public static Matrix Transform (Matrix value, Quaternion rotation)
