@@ -31,7 +31,7 @@ namespace Benchmark
 {
 	class Driver
 	{
-		public static void Main (string[] args)
+		public static int Main (string[] args)
 		{
 			var variant = "Simd";
 			if (args.Length > 0)
@@ -41,25 +41,59 @@ namespace Benchmark
 			var rootDir = Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (thisDir)));
 			var binDir = Path.Combine (Path.Combine (rootDir, "Mono.GameMath"), "bin");
 			var mathAssembly = Path.Combine (binDir, Path.Combine (variant, "Mono.GameMath.dll"));
-			Assembly.LoadFile (mathAssembly);
-			RunTests ();
+			try {
+				Assembly.LoadFile (mathAssembly);
+			} catch {
+				System.Console.Error.WriteLine ("Assembly variant '{0}' not found", variant);
+				return 1;
+			}
+			
+			string type = null;
+			string method = null;
+			if (args.Length > 1 && args[1] != "*")
+				type = args[1];
+			if (args.Length > 2)
+				method = args[2];
+			
+			return RunTests (type, method);
 		}
 		
-		static void RunTests ()
+		//this has to be a separate method so it gets JITed after we load the Mono.GameMath.dll assembly
+		static int RunTests (string type, string method)
 		{
-			Type[] testTypes = new [] {
-				typeof (MatrixTest),
-				typeof (Vector4Test),
-				typeof (Vector3Test),
-				typeof (Vector2Test),
-			};
+			Type[] testTypes;
+			if (type != null) {
+				try {
+					testTypes = new Type[] { typeof (Driver).Assembly.GetType ("Benchmark." + type, true) };
+				} catch {
+					System.Console.Error.WriteLine ("Test type '{0}' not found", type);
+					return 2;
+				}
+			} else {
+				testTypes = new Type[] {
+					typeof (MatrixTest),
+					typeof (Vector4Test),
+					typeof (Vector3Test),
+					typeof (Vector2Test),
+				};
+			}
 			
 			int times =10 * 1000 * 1000 ;
 			var sw = new System.Diagnostics.Stopwatch ();
 			long total = 0;
 			
 			foreach (var t in testTypes) {
-				MethodInfo[] methodInfos = t.GetMethods (BindingFlags.Static | BindingFlags.Public);
+				MethodInfo[] methodInfos;
+				if (method != null) {
+					methodInfos = new MethodInfo[] { t.GetMethod (method, BindingFlags.Static | BindingFlags.Public) };
+					if (methodInfos[0] == null) {
+						System.Console.WriteLine ("{0}.{1}: NotFound", t.Name, method);
+						continue;
+					}
+				} else {
+					methodInfos = t.GetMethods (BindingFlags.Static | BindingFlags.Public);
+				}
+				
 				Action<int>[] methods = new Action<int> [methodInfos.Length];
 				for (int i = 0; i < methodInfos.Length; i++) {
 					methods[i] = (Action<int>) Delegate.CreateDelegate (typeof (Action<int>), methodInfos[i]);
@@ -85,6 +119,7 @@ namespace Benchmark
 			}
 			
 			System.Console.WriteLine ("Total: {0}", total);
+			return 0;
 		}
 	}
 }
