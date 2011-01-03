@@ -417,7 +417,6 @@ namespace Mono.GameMath
 		public static void SmoothStep (ref Vector4 value1, ref Vector4 value2, float amount, out Vector4 result)
 		{
 			float scale = (amount * amount * (3 - 2 * amount));
-			
 #if SIMD
 			result.v4 = value1.v4 + (value2.v4 - value1.v4) * scale; 
 #else
@@ -476,7 +475,7 @@ namespace Mono.GameMath
 		public static void Distance (ref Vector4 value1, ref Vector4 value2, out float result)
 		{
 #if SIMD
-			Vector4f r0 = value2.v4 = value1.v4;
+			Vector4f r0 = value2.v4 - value1.v4;
 			r0 = r0 * r0;
 			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
@@ -497,7 +496,7 @@ namespace Mono.GameMath
 		public static void DistanceSquared (ref Vector4 value1, ref Vector4 value2, out float result)
 		{
 #if SIMD
-			Vector4f r0 = value2.v4 = value1.v4;
+			Vector4f r0 = value2.v4 - value1.v4;
 			r0 = r0 * r0;
 			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
