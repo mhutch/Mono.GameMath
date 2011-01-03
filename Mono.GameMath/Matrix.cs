@@ -555,7 +555,8 @@ namespace Mono.GameMath
 		public static void Multiply (ref Matrix matrix1, ref Matrix matrix2, out Matrix result)
 		{
 #if SIMD
-			//FIXME where is my fused multiply-add?
+			//http://www.freevec.org/function/matrix_4x4_multiplication_floats
+			//FIXME does Mono.Simd have fused multiply-add?
 			Vector4f a1 = matrix1.r1, a2 = matrix1.r2, a3 = matrix1.r3, a4 = matrix1.r4;
 			Vector4f b1 = matrix2.r1, b2 = matrix2.r2, b3 = matrix2.r3, b4 = matrix2.r4;
 			
@@ -877,9 +878,8 @@ namespace Mono.GameMath
 		
 		public static Matrix Lerp (Matrix matrix1, Matrix matrix2, float amount)
 		{
-			Matrix result;
-			Lerp (ref matrix1, ref matrix2, amount, out result);
-			return result;
+			Lerp (ref matrix1, ref matrix2, amount, out matrix1);
+			return matrix1;
 		}
 		
 		public static void Lerp (ref Matrix matrix1, ref Matrix matrix2, float amount, out Matrix result)
@@ -926,14 +926,69 @@ namespace Mono.GameMath
 		
 		public static Matrix Transpose (Matrix matrix)
 		{
-			Matrix result;
-			Transpose (ref matrix, out result);
-			return result;
+#if SIMD
+			//sse version of transpose doesn't need source unaltered
+			Transpose (ref matrix, out matrix);
+			return matrix;
+#else
+			return new Matrix (
+				M11, M21, M31, M41,
+				M12, M22, M32, M42,
+				M13, M23, M33, M43,
+				M14, M24, M34, M44);
+#endif
 		}
 		
 		public static void Transpose (ref Matrix matrix, out Matrix result)
 		{
-			throw new NotImplementedException ();
+#if SIMD
+			//algorithm from public domain - http://0x80.pl/snippets/asm/sse-transpose.c
+			Vector4f xmm0 = matrix.r1; // xmm0 = a0 a1 a2 a3
+			Vector4f xmm1 = matrix.r2; // xmm1 = b0 b1 b2 b3
+			Vector4f xmm2 = matrix.r3; // xmm2 = c0 c1 c2 c3
+			Vector4f xmm3 = matrix.r4; // xmm3 = d0 d1 d2 d3
+			
+			Vector4f xmm4 = xmm0;
+			xmm0 = VectorOperations.InterleaveLow  (xmm0, xmm2); // xmm0 = a0 c0 a1 c1
+			xmm4 = VectorOperations.InterleaveHigh (xmm4, xmm2); // xmm4 = a2 c2 a3 c3
+			
+			xmm2 = xmm1;
+			xmm1 = VectorOperations.InterleaveLow  (xmm1, xmm3); // xmm1 = b0 d0 b1 d1
+			xmm2 = VectorOperations.InterleaveHigh (xmm2, xmm3); // xmm2 = b2 d2 b3 d3
+			
+			xmm3 = xmm0;
+			xmm0 = VectorOperations.InterleaveLow  (xmm0, xmm1); // xmm0 = a0 b0 c0 d0
+			xmm3 = VectorOperations.InterleaveHigh (xmm3, xmm1); // xmm3 = a1 b1 c1 d1
+			
+			xmm1 = xmm4;
+			xmm1 = VectorOperations.InterleaveLow  (xmm1, xmm2); // xmm1 = a2 b2 c2 d2
+			xmm4 = VectorOperations.InterleaveHigh (xmm4, xmm2); // xmm4 = a3 b3 c3 d3
+			
+			result.r1 = xmm0;
+			result.r2 = xmm3;
+			result.r3 = xmm1;
+			result.r4 = xmm4;
+#else
+			result.M11 = matrix.M11;
+			result.M12 = matrix.M21;
+			result.M13 = matrix.M31;
+			result.M14 = matrix.M41;
+			
+			result.M21 = matrix.M12;
+			result.M22 = matrix.M22;
+			result.M23 = matrix.M32;
+			result.M24 = matrix.M42;
+			
+			result.M31 = matrix.M13;
+			result.M32 = matrix.M23;
+			result.M33 = matrix.M33;
+			result.M34 = matrix.M43;
+			
+			result.M41 = matrix.M14;
+			result.M42 = matrix.M24;
+			result.M43 = matrix.M34;
+			result.M44 = matrix.M44;
+#endif
 		}
 		
 		#endregion

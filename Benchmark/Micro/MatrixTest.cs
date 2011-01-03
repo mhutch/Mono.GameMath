@@ -532,14 +532,14 @@ namespace Benchmark
 		public static void TransformRef (int times)
 		{
 		}
-		
+		*/
 		public static void Transpose (int times)
 		{
 			Matrix a = TestMatrix0;
 			Matrix result;
 			
 			for (int i = 0; i < times; i++) {
-				Matrix.Invert (ref a, out result);
+				Matrix.Transpose (ref a, out result);
 			}
 		}
 		
@@ -549,11 +549,9 @@ namespace Benchmark
 			Matrix result;
 			
 			for (int i = 0; i < times; i++) {
-				Matrix.Invert (ref a, out result);
+				Matrix.Transpose (ref a, out result);
 			}
 		}
-		
-		*/
 		
 		#endregion
 		
