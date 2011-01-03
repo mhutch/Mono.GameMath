@@ -526,6 +526,7 @@ namespace Mono.GameMath
 		public static void Dot (ref Vector4 vector1, ref Vector4 vector2, out float result)
 		{
 #if SIMD
+			//NOTE: shuffle->add->shuffle->add is faster than horizontal-add->horizontal-add
 			Vector4f r0 = vector2.v4 * vector1.v4;
 			// r0 = xX yY zZ wW
 			Vector4f r1 = r0.Shuffle (ShuffleSel.Swap);
