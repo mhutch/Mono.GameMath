@@ -207,42 +207,67 @@ namespace Mono.GameMath
 		
 		public static Vector2 operator + (Vector2 value1, Vector2 value2)
 		{
-			return Add (value1, value2);
+			return new Vector2 (value1.X + value2.X, value1.Y + value2.Y);
 		}
 		
 		public static Vector2 operator / (Vector2 value, float divider)
 		{
-			return Divide (value, divider);
+#if SIMD
+			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) / new Vector4f (divider);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value.X / divider, value.Y / divider);
+#endif
 		}
 		
 		public static Vector2 operator / (Vector2 value1, Vector2 value2)
 		{
-			return Divide (value1, value2);
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X / value2.X, value1.Y / value2.Y);
+#endif
 		}
 		
 		public static Vector2 operator * (Vector2 value1, Vector2 value2)
 		{
-			return Multiply (value1, value2);
+#if SIMD
+			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
+			return new Vector2 (v4.X, v4.Y);
+#else
+			return new Vector2 (value1.X * value2.X, value1.Y * value2.Y);
+#endif
 		}
 		
 		public static Vector2 operator * (Vector2 value, float scaleFactor)
 		{
-			return Multiply (value, scaleFactor);
+#if SIMD
+			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			return new Vector2 (v4.X, v4.Y);	
+#else
+		return new Vector2 (value.X * scaleFactor, value.Y * scaleFactor);
+#endif
 		}
 		
 		public static Vector2 operator * (float scaleFactor, Vector2 value)
 		{
-			return Multiply (value, scaleFactor);
+#if SIMD
+			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			return new Vector2 (v4.X, v4.Y);	
+#else
+			return new Vector2 (value.X * scaleFactor, value.Y * scaleFactor);
+#endif
 		}
 		
 		public static Vector2 operator - (Vector2 value1, Vector2 value2)
 		{
-			return Subtract (value1, value2);
+			return new Vector2 (value1.X - value2.X, value1.Y - value2.Y);
 		}
 		
 		public static Vector2 operator - (Vector2 value)
 		{
-			return Negate (value);
+			return new Vector2 (- value.X, - value.Y);
 		}
 		
 		#endregion
@@ -272,9 +297,17 @@ namespace Mono.GameMath
 		public static void Hermite (ref Vector2 value1, ref Vector2 tangent1, ref Vector2 value2, ref Vector2 tangent2,
 			float amount, out Vector2 result)
 		{
-			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.Hermite (value1.X, tangent1.X, value2.X, tangent2.X, amount);
-			result.Y = MathHelper.Hermite (value1.Y, tangent1.Y, value2.Y, tangent2.Y, amount);
+			float s = amount;
+			float s2 = s * s;
+			float s3 = s2 * s;
+			
+			float h1 =  2 * s3 - 3 * s2 + 1;
+			float h2 = -2 * s3 + 3 * s2    ;
+			float h3 =      s3 - 2 * s2 + s;
+			float h4 =      s3 -     s2    ;
+			
+			result.X = h1 * value1.X + h2 * value2.X + h3 * tangent1.X + h4 * tangent2.X;
+			result.Y = h1 * value1.Y + h2 * value2.Y + h3 * tangent1.Y + h4 * tangent2.Y;
 		}
 		
 		public static Vector2 Lerp (Vector2 value1, Vector2 value2, float amount)
@@ -330,8 +363,16 @@ namespace Mono.GameMath
 		
 		public static void Clamp (ref Vector2 value1, ref Vector2 min, ref Vector2 max, out Vector2 result)
 		{
+/*#if SIMD
+			var v4 = VectorOperations.Min (VectorOperations.Max (
+				new Vector4f (value1.X, value1.Y, 0f, 0f),
+				new Vector4f (min.X, min.Y, 0f, 0f)),
+				new Vector4f (max.X, max.Y, 0f, 0f));
+			result = new Vector2 (v4.X, v4.Y);
+#else*/
 			result.X = MathHelper.Clamp (value1.X, min.X, max.X);
 			result.Y = MathHelper.Clamp (value1.Y, min.Y, max.Y);
+//#endif
 		}
 		
 		public static float Distance (Vector2 value1, Vector2 value2)
@@ -343,8 +384,16 @@ namespace Mono.GameMath
 		
 		public static void Distance (ref Vector2 value1, ref Vector2 value2, out float result)
 		{
+#if SIMD
+			Vector4f r0 = new Vector4f (value2.X - value1.X, value2.Y - value1.Y, 0f, 0f);
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			result = r0.Sqrt ().X;
+#else
 			DistanceSquared (ref value1, ref value2, out result);
 			result = (float) System.Math.Sqrt (result);
+#endif
 		}
 		
 		public static float DistanceSquared (Vector2 value1, Vector2 value2)
@@ -420,7 +469,19 @@ namespace Mono.GameMath
 		
 		public static void Normalize (ref Vector2 value, out Vector2 result)
 		{
-			Multiply (ref value, 1f / value.Length (), out result);
+/*#if SIMD
+			Vector4f v4 = new Vector4f (value.X, value.Y, 0f, 0f);
+			Vector4f r0 = v4 * v4;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			v4 = v4 / r0.Sqrt ();
+			result.X = v4.X;
+			result.Y = v4.Y;
+#else*/
+			var l = value.Length ();
+			result.X = value.X / l;
+			result.Y = value.Y / l;
+//#endif
 		}
 		
 		public static Vector2 Reflect (Vector2 vector, Vector2 normal)
@@ -562,7 +623,7 @@ namespace Mono.GameMath
 		
 		public bool Equals (Vector2 other)
 		{
-			return other == this;
+			return X == other.X && Y == other.Y;
 		}
 		
 		public override bool Equals (object obj)

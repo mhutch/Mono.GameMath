@@ -269,42 +269,74 @@ namespace Mono.GameMath
 		
 		public static Vector3 operator + (Vector3 value1, Vector3 value2)
 		{
-			return Add (value1, value2);
+#if SIMD
+			return new Mono.GameMath.Vector3 (value1.v4 + value2.v4);
+#else
+			return new Vector3 (value1.X + value2.X, value1.Y + value2.Y, value1.Z + value2.Z);
+#endif
 		}
 		
 		public static Vector3 operator / (Vector3 value, float divider)
 		{
-			return Divide (value, divider);
+#if SIMD
+			return new Vector3 (value.v4 / new Vector4f (divider));
+#else
+			return new Vector3 (value.X / divider, value.Y / divider, value.Z / divider);
+#endif
 		}
 		
 		public static Vector3 operator / (Vector3 value1, Vector3 value2)
 		{
-			return Divide (value1, value2);
+#if SIMD
+			return new Vector3 (value1.v4 / value2.v4);
+#else
+			return new Vector3 (value1.X / value2.X, value1.Y / value2.Y, value1.Z / value2.Z);
+#endif
 		}
 		
 		public static Vector3 operator * (Vector3 value1, Vector3 value2)
 		{
-			return Multiply (value1, value2);
+#if SIMD
+			return new Vector3 (value1.v4 * value2.v4);
+#else
+			return new Vector3 (value1.X * value2.X, value1.Y * value2.Y, value1.Z * value2.Z);
+#endif
 		}
 		
 		public static Vector3 operator * (Vector3 value, float scaleFactor)
 		{
-			return Multiply (value, scaleFactor);
+#if SIMD
+		return new Vector3 (value.v4 * scaleFactor);	
+#else
+		return new Vector3 (value.X * scaleFactor, value.Y * scaleFactor, value.Z * scaleFactor);
+#endif
 		}
 		
 		public static Vector3 operator * (float scaleFactor, Vector3 value)
 		{
-			return Multiply (value, scaleFactor);
+#if SIMD
+		return new Vector3 (scaleFactor* value.v4);	
+#else
+		return new Vector3 (value.X * scaleFactor, value.Y * scaleFactor, value.Z * scaleFactor);
+#endif
 		}
 		
 		public static Vector3 operator - (Vector3 value1, Vector3 value2)
 		{
-			return Subtract (value1, value2);
+#if SIMD
+			return new Vector3 (value1.v4 - value2.v4);
+#else
+			return new Vector3 (value1.X - value2.X, value1.Y - value2.Y, value1.Z - value2.Z);
+#endif
 		}
 		
 		public static Vector3 operator - (Vector3 value)
 		{
-			return Negate (value);
+#if SIMD
+			return new Vector3 (value.v4 ^ new Vector4f (-0.0f));
+#else
+			return new Vector3 (- value.X, - value.Y, - value.Z);
+#endif
 		}
 		
 		#endregion
@@ -335,17 +367,26 @@ namespace Mono.GameMath
 		public static void Hermite (ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2,
 			float amount, out Vector3 result)
 		{
-			float s = amount;
-			float s2 = s * s;
-			float s3 = s2 * s;
 #if SIMD
-			var h1 = new Vector4f ( 2 * s3 - 3 * s2 + 1);
-			var h2 = new Vector4f (-2 * s3 + 3 * s2    );
-			var h3 = new Vector4f (     s3 - 2 * s2 + s);
-			var h4 = new Vector4f (     s3 -     s2    );
+			var s = new Vector4f (amount);
+			var s2 = s * s;
+			var s3 = s2 * s;
+			var c1 = new Vector4f (1f);
+			var c2 = new Vector4f (2f);
+			var m2 = new Vector4f (-2f);
+			var c3 = new Vector4f (3f);
+			
+			var h1 = c2 * s3 - c3 * s2 + c1;
+			var h2 = m2 * s3 + c3 * s2;
+			var h3 = s3 - 2 * s2 + s;
+			var h4 = s3 - s2;
 			
 			result.v4 = h1 * value1.v4 + h2 * value2.v4 + h3 * tangent1.v4 + h4 * tangent2.v4;
 #else
+			float s = amount;
+			float s2 = s * s;
+			float s3 = s2 * s;
+			
 			float h1 =  2 * s3 - 3 * s2 + 1;
 			float h2 = -2 * s3 + 3 * s2    ;
 			float h3 =      s3 - 2 * s2 + s;
@@ -593,7 +634,10 @@ namespace Mono.GameMath
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
 			result.v4 = value.v4 / r0.Sqrt ();
 #else
-			Divide (ref value, value.Length (), out result);
+			var l = value.Length ();
+			result.X = value.X / l;
+			result.Y = value.Y / l;
+			result.Z = value.Z / l;
 #endif
 		}
 		
@@ -739,7 +783,7 @@ namespace Mono.GameMath
 #if SIMD
 			return v4 == other.v4;
 #else
-			return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+			return X == other.X && Y == other.Y && Z == other.Z;
 #endif
 		}
 		
@@ -765,8 +809,6 @@ namespace Mono.GameMath
 				f = Y;
 				acc ^= *((int*)&f);
 				f = Z;
-				acc ^= *((int*)&f);
-				f = W;
 				acc ^= *((int*)&f);
 				return acc;
 			}
