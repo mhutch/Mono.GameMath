@@ -1,31 +1,33 @@
-Overview
-========
+Fast Managed Math for Games
+===========================
 
 Mono.GameMath is a project to develop a highly-performant math library
 for games.
 
 There will be three components:
-* the math library
-* a benchmark suite
-* an IL manipulation tool
+
+*  the math library
+*  a benchmark suite
+*  an IL manipulation tool
 
 The Library
-===========
+-----------
 
 The math library API is initially based on the XNA math API, in order to 
 make it easy to port code, however it will likely be expanded. Non-math 
 algorithms used in games may also be added if contributed.
 
 The library will have the following ifdefed versions:
-* "safe" - as a baseline and for sandboxed platforms
-* unsafe - for architectures without SIMD support
-* unsafe + Mono.Simd
+
+*  "safe" - as a baseline and for sandboxed platforms
+*  unsafe - for architectures without SIMD support
+*  unsafe + Mono.Simd
 
 Architecture-specific versions tuned for JIT & SIMD behaviour
 may be added later if benchmarks indicate this is necessary.
 
 The Benchmark Suite
-===================
+-------------------
 
 The benchmark suite will consist of micro-benchmarks to measure 
 individual functions, and macro-benchmarks to test the interaction of 
@@ -39,7 +41,7 @@ different versions of the library with different optimizations.
 It will also be able to compare results against recorded baselines.
 
 The IL Tool
-===========
+-----------
 
 The IL manipulation tool will be used to create differently tuned
 versions of the library, and to optimize consuming code, based on
