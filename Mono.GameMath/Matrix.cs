@@ -94,10 +94,10 @@ namespace Mono.GameMath
 		
 		Matrix (float v)
 		{
-			m11 = v; m12 = v; m13 = v, m14 = v;
-			m21 = v; m22 = v; m23 = v, m24 = v;
-			m31 = v; m32 = v; m33 = v, m34 = v;
-			m41 = v; m42 = v; m43 = v, m44 = v;
+			m11 = v; m12 = v; m13 = v; m14 = v;
+			m21 = v; m22 = v; m23 = v; m24 = v;
+			m31 = v; m32 = v; m33 = v; m34 = v;
+			m41 = v; m42 = v; m43 = v; m44 = v;
 		}
 #endif
 		
@@ -113,10 +113,10 @@ namespace Mono.GameMath
 			r3 = new Vector4f (m31, m32, m33, m34);
 			r4 = new Vector4f (m41, m42, m43, m44);
 #else
-			M11 = m11; M12 = m12; M13 = m13; M14 = m14;
-			M21 = m21; M22 = m22; M23 = m23; M24 = m24;
-			M31 = m31; M32 = m32; M33 = m33; M34 = m34;
-			M41 = m41; M42 = m42; M43 = m43; M44 = m44;
+			this.m11 = m11; this.m12 = m12; this.m13 = m13; this.m14 = m14;
+			this.m21 = m21; this.m22 = m22; this.m23 = m23; this.m24 = m24;
+			this.m31 = m31; this.m32 = m32; this.m33 = m33; this.m34 = m34;
+			this.m41 = m41; this.m42 = m42; this.m43 = m43; this.m44 = m44;
 #endif
 		}
 		
@@ -932,10 +932,10 @@ namespace Mono.GameMath
 			return matrix;
 #else
 			return new Matrix (
-				M11, M21, M31, M41,
-				M12, M22, M32, M42,
-				M13, M23, M33, M43,
-				M14, M24, M34, M44);
+				matrix.m11, matrix.m21, matrix.m31, matrix.m41,
+				matrix.m12, matrix.m22, matrix.m32, matrix.m42,
+				matrix.m13, matrix.m23, matrix.m33, matrix.m43,
+				matrix.m14, matrix.m24, matrix.m34, matrix.m44);
 #endif
 		}
 		
