@@ -586,19 +586,19 @@ namespace Benchmark
 		{
 		}
 		
-		public static void TransformVector4Matrix (int times)
+		public static void TransformMatrix (int times)
 		{
 		}
 		
-		public static void TransformVector4MatrixRef (int times)
+		public static void TransformMatrixRef (int times)
 		{
 		}
 		
-		public static void TransformVector4Quaternon (int times)
+		public static void TransformQuaternon (int times)
 		{
 		}
 		
-		public static void TransformVector4QuaternonRef (int times)
+		public static void TransformQuaternonRef (int times)
 		{
 		}
 		
