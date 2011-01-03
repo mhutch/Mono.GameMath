@@ -335,10 +335,26 @@ namespace Mono.GameMath
 		public static void Hermite (ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2,
 			float amount, out Vector3 result)
 		{
-			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.Hermite (value1.X, tangent1.X, value2.X, tangent2.X, amount);
-			result.Y = MathHelper.Hermite (value1.Y, tangent1.Y, value2.Y, tangent2.Y, amount);
-			result.Z = MathHelper.Hermite (value1.Z, tangent1.Z, value2.Z, tangent2.Z, amount);
+			float s = amount;
+			float s2 = s * s;
+			float s3 = s2 * s;
+#if SIMD
+			var h1 = new Vector4f ( 2 * s3 - 3 * s2 + 1);
+			var h2 = new Vector4f (-2 * s3 + 3 * s2    );
+			var h3 = new Vector4f (     s3 - 2 * s2 + s);
+			var h4 = new Vector4f (     s3 -     s2    );
+			
+			result.v4 = h1 * value1.v4 + h2 * value2.v4 + h3 * tangent1.v4 + h4 * tangent2.v4;
+#else
+			float h1 =  2 * s3 - 3 * s2 + 1;
+			float h2 = -2 * s3 + 3 * s2    ;
+			float h3 =      s3 - 2 * s2 + s;
+			float h4 =      s3 -     s2    ;
+			
+			result.X = h1 * value1.X + h2 * value2.X + h3 * tangent1.X + h4 * tangent2.X;
+			result.Y = h1 * value1.Y + h2 * value2.Y + h3 * tangent1.Y + h4 * tangent2.Y;
+			result.Z = h1 * value1.Z + h2 * value2.Z + h3 * tangent1.Z + h4 * tangent2.Z;
+#endif
 		}
 		
 		public static Vector3 Lerp (Vector3 value1, Vector3 value2, float amount)
@@ -349,9 +365,13 @@ namespace Mono.GameMath
 		
 		public static void Lerp (ref Vector3 value1, ref Vector3 value2, float amount, out Vector3 result)
 		{
-			Subtract (ref value2, ref value1, out result);
-			Multiply (ref result, amount, out result);
-			Add (ref value1, ref result, out result);
+#if SIMD
+			result.v4 = value1.v4 + (value2.v4 - value1.v4) * amount; 
+#else
+			result.X = value1.X + (value2.X - value1.X) * amount;
+			result.Y = value1.Y + (value2.Y - value1.Y) * amount;
+			result.Z = value1.Z + (value2.Z - value1.Z) * amount;
+#endif
 		}
 		
 		public static Vector3 SmoothStep (Vector3 value1, Vector3 value2, float amount)
@@ -362,10 +382,14 @@ namespace Mono.GameMath
 		
 		public static void SmoothStep (ref Vector3 value1, ref Vector3 value2, float amount, out Vector3 result)
 		{
-			float scale = (amount * amount * (3 - 2 * amount));
-			Subtract (ref value2, ref value1, out result);
-			Multiply (ref result, scale, out result);
-			Add (ref value1, ref result, out result);
+			float scale = (amount * amount * (3 - 2 * amount));	
+#if SIMD
+			result.v4 = value1.v4 + (value2.v4 - value1.v4) * scale; 
+#else
+			result.X = value1.X + (value2.X - value1.X) * scale;
+			result.Y = value1.Y + (value2.Y - value1.Y) * scale;
+			result.Z = value1.Z + (value2.Z - value1.Z) * scale;
+#endif
 		}
 		
 		#endregion
@@ -395,9 +419,13 @@ namespace Mono.GameMath
 		
 		public static void Clamp (ref Vector3 value1, ref Vector3 min, ref Vector3 max, out Vector3 result)
 		{
+#if SIMD
+			result.v4 = VectorOperations.Min (VectorOperations.Max (value1.v4, min.v4), max.v4);
+#else
 			result.X = MathHelper.Clamp (value1.X, min.X, max.X);
 			result.Y = MathHelper.Clamp (value1.Y, min.Y, max.Y);
 			result.Z = MathHelper.Clamp (value1.Z, min.Z, max.Z);
+#endif
 		}
 		
 		public static Vector3 Cross (Vector3 vector1, Vector3 vector2)
@@ -409,9 +437,19 @@ namespace Mono.GameMath
 		
 		public static void Cross (ref Vector3 vector1, ref Vector3 vector2, out Vector3 result)
 		{
+#if SIMD
+			Vector4f r1 = vector1.v4;
+			Vector4f r2 = vector2.v4;
+			result.v4 =
+				r1.Shuffle (ShuffleSel.XFromY | ShuffleSel.YFromZ | ShuffleSel.ZFromX | ShuffleSel.WFromW) *
+				r2.Shuffle (ShuffleSel.XFromZ | ShuffleSel.YFromX | ShuffleSel.ZFromY | ShuffleSel.WFromW) -
+				r1.Shuffle (ShuffleSel.XFromZ | ShuffleSel.YFromX | ShuffleSel.ZFromY | ShuffleSel.WFromW) *
+				r2.Shuffle (ShuffleSel.XFromY | ShuffleSel.YFromZ | ShuffleSel.ZFromX | ShuffleSel.WFromW);
+#else
 			result.X = vector1.Y * vector2.Z - vector1.Z * vector2.Y;
 			result.Y = vector1.Z * vector2.X - vector1.X * vector2.Z;
 			result.Z = vector1.X * vector2.Y - vector1.Y * vector2.X;
+#endif
 		}
 		
 		public static float Distance (Vector3 value1, Vector3 value2)
@@ -423,8 +461,16 @@ namespace Mono.GameMath
 		
 		public static void Distance (ref Vector3 value1, ref Vector3 value2, out float result)
 		{
+#if SIMD
+			Vector4f r0 = value2.v4 - value1.v4;
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			result = r0.Sqrt ().X;
+#else
 			DistanceSquared (ref value1, ref value2, out result);
 			result = (float) System.Math.Sqrt (result);
+#endif
 		}
 		
 		public static float DistanceSquared (Vector3 value1, Vector3 value2)
@@ -436,8 +482,16 @@ namespace Mono.GameMath
 		
 		public static void DistanceSquared (ref Vector3 value1, ref Vector3 value2, out float result)
 		{
+#if SIMD
+			Vector4f r0 = value2.v4 - value1.v4;
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			result = r0.X;
+#else
 			Subtract (ref value1, ref value2, out value1);
 			result = value1.LengthSquared ();
+#endif
 		}
 		
 		public static float Dot (Vector3 vector1, Vector3 vector2)
@@ -449,17 +503,40 @@ namespace Mono.GameMath
 		
 		public static void Dot (ref Vector3 vector1, ref Vector3 vector2, out float result)
 		{
+#if SIMD
+			Vector4f r0 = vector2.v4 * vector1.v4;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			result = r0.Sqrt ().X;
+#else
 			result = (vector1.X * vector2.X) + (vector1.Y * vector2.Y) + (vector1.Z * vector2.Z);
+#endif
 		}
 		
 		public float Length ()
 		{
+#if SIMD
+			Vector4f r0 = v4;
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			return r0.Sqrt ().X;
+#else
 			return (float) System.Math.Sqrt (LengthSquared ());
+#endif	
 		}
 		
 		public float LengthSquared ()
 		{
+#if SIMD
+			Vector4f r0 = v4;
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			return r0.X;
+#else
 			return (X * X) + (Y * Y) + (Z * Z);
+#endif
 		}
 		
 		public static Vector3 Max (Vector3 value1, Vector3 value2)
@@ -470,9 +547,13 @@ namespace Mono.GameMath
 		
 		public static void Max (ref Vector3 value1, ref Vector3 value2, out Vector3 result)
 		{
+#if SIMD
+			result.v4 = VectorOperations.Max (value1.v4, value2.v4);
+#else
 			result.X = System.Math.Max (value1.X, value2.X);
 			result.Y = System.Math.Max (value1.Y, value2.Y);
 			result.Z = System.Math.Max (value1.Z, value2.Z);
+#endif
 		}
 		
 		public static Vector3 Min (Vector3 value1, Vector3 value2)
@@ -483,9 +564,13 @@ namespace Mono.GameMath
 		
 		public static void Min (ref Vector3 value1, ref Vector3 value2, out Vector3 result)
 		{
+#if SIMD
+			result.v4 = VectorOperations.Min (value1.v4, value2.v4);
+#else
 			result.X = System.Math.Min (value1.X, value2.X);
 			result.Y = System.Math.Min (value1.Y, value2.Y);
 			result.Z = System.Math.Min (value1.Z, value2.Z);
+#endif
 		}
 		
 		public void Normalize ()
@@ -501,7 +586,15 @@ namespace Mono.GameMath
 		
 		public static void Normalize (ref Vector3 value, out Vector3 result)
 		{
-			Multiply (ref value, 1f / value.Length (), out result);
+#if SIMD
+			Vector4f r0 = value.v4;
+			r0 = r0 * r0;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			result.v4 = value.v4 / r0.Sqrt ();
+#else
+			Divide (ref value, value.Length (), out result);
+#endif
 		}
 		
 		public static Vector3 Reflect (Vector3 vector, Vector3 normal)
@@ -643,7 +736,11 @@ namespace Mono.GameMath
 		
 		public bool Equals (Vector3 other)
 		{
-			return other == this;
+#if SIMD
+			return v4 == other.v4;
+#else
+			return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+#endif
 		}
 		
 		public override bool Equals (object obj)
@@ -653,17 +750,48 @@ namespace Mono.GameMath
 		
 		public override int GetHashCode ()
 		{
+#if SIMD
+			unsafe {
+				Vector4f f = v4;
+				Vector4i i = *((Vector4i*)&f);
+				i = i ^ i.Shuffle (ShuffleSel.Swap);
+				i = i ^ i.Shuffle (ShuffleSel.RotateLeft);
+				return i.X;
+			}
+#elif UNSAFE
+			unsafe {
+				float f = X;
+				int acc = *((int*)&f);
+				f = Y;
+				acc ^= *((int*)&f);
+				f = Z;
+				acc ^= *((int*)&f);
+				f = W;
+				acc ^= *((int*)&f);
+				return acc;
+			}
+			
+#else
 			return X.GetHashCode () ^ Y.GetHashCode () ^ Z.GetHashCode ();
+#endif
 		}
 		
 		public static bool operator == (Vector3 a, Vector3 b)
 		{
+#if SIMD
+			return a.v4 == b.v4;
+#else
 			return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+#endif
 		}
 		
 		public static bool operator != (Vector3 a, Vector3 b)
 		{
+#if SIMD
+			return a.v4 != b.v4;
+#else
 			return a.X != b.X || a.Y != b.Y || a.Z != b.Z;
+#endif
 		}
 		
 		# endregion
