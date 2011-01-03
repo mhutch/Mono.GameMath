@@ -25,15 +25,81 @@
 // THE SOFTWARE.
 using System;
 
+#if SIMD
+using Mono.Simd;
+#endif
+
 namespace Mono.GameMath
 {
 	[Serializable]
 	public struct Matrix : IEquatable<Matrix>
 	{
-		public float M11, M12, M13, M14;
-		public float M21, M22, M23, M24;
-		public float M31, M32, M33, M34;
-		public float M41, M42, M43, M44;
+#if SIMD
+		Vector4f r1, r2, r3, r4;
+		
+		public float M11 { get { return r1.X; } set { r1.X = value; } }
+		public float M12 { get { return r1.Y; } set { r1.Y = value; } }
+		public float M13 { get { return r1.Z; } set { r1.Z = value; } }
+		public float M14 { get { return r1.W; } set { r1.W = value; } }
+		public float M21 { get { return r2.X; } set { r2.X = value; } }
+		public float M22 { get { return r2.Y; } set { r2.Y = value; } }
+		public float M23 { get { return r2.Z; } set { r2.Z = value; } }
+		public float M24 { get { return r2.W; } set { r2.W = value; } }
+		public float M31 { get { return r3.X; } set { r3.X = value; } }
+		public float M32 { get { return r3.Y; } set { r3.Y = value; } }
+		public float M33 { get { return r3.Z; } set { r3.Z = value; } }
+		public float M34 { get { return r3.W; } set { r3.W = value; } }
+		public float M41 { get { return r4.X; } set { r4.X = value; } }
+		public float M42 { get { return r4.Y; } set { r4.Y = value; } }
+		public float M43 { get { return r4.Z; } set { r4.Z = value; } }
+		public float M44 { get { return r4.W; } set { r4.W = value; } }
+		
+		Matrix (Vector4f r1, Vector4f r2, Vector4f r3, Vector4f r4)
+		{
+			this.r1 = r1;
+			this.r2 = r2;
+			this.r3 = r3;
+			this.r4 = r4;
+		}
+		
+		Matrix (float v)
+		{
+			r1 = new Vector4f (v);
+			r2 = new Vector4f (v);
+			r3 = new Vector4f (v);
+			r4 = new Vector4f (v);
+		}
+#else
+		float m11, m12, m13, m14;
+		float m21, m22, m23, m24;
+		float m31, m32, m33, m34;
+		float m41, m42, m43, m44;
+		
+		public float M11 { get { return m11; } set { m11 = value; } }
+		public float M12 { get { return m12; } set { m12 = value; } }
+		public float M13 { get { return m13; } set { m13 = value; } }
+		public float M14 { get { return m14; } set { m14 = value; } }
+		public float M21 { get { return m21; } set { m21 = value; } }
+		public float M22 { get { return m22; } set { m22 = value; } }
+		public float M23 { get { return m23; } set { m23 = value; } }
+		public float M24 { get { return m24; } set { m24 = value; } }
+		public float M31 { get { return m31; } set { m31 = value; } }
+		public float M32 { get { return m32; } set { m32 = value; } }
+		public float M33 { get { return m33; } set { m33 = value; } }
+		public float M34 { get { return m34; } set { m34 = value; } }
+		public float M41 { get { return m41; } set { m41 = value; } }
+		public float M42 { get { return m42; } set { m42 = value; } }
+		public float M43 { get { return m43; } set { m43 = value; } }
+		public float M44 { get { return m44; } set { m44 = value; } }
+		
+		Matrix (float v)
+		{
+			m11 = v; m12 = v; m13 = v, m14 = v;
+			m21 = v; m22 = v; m23 = v, m24 = v;
+			m31 = v; m32 = v; m33 = v, m34 = v;
+			m41 = v; m42 = v; m43 = v, m44 = v;
+		}
+#endif
 		
 		public Matrix (
 			float m11, float m12, float m13, float m14,
@@ -41,10 +107,17 @@ namespace Mono.GameMath
 			float m31, float m32, float m33, float m34,
 			float m41, float m42, float m43, float m44)
 		{
+#if SIMD
+			r1 = new Vector4f (m11, m12, m13, m14);
+			r2 = new Vector4f (m21, m22, m23, m24);
+			r3 = new Vector4f (m31, m32, m33, m34);
+			r4 = new Vector4f (m41, m42, m43, m44);
+#else
 			M11 = m11; M12 = m12; M13 = m13; M14 = m14;
 			M21 = m21; M22 = m22; M23 = m23; M24 = m24;
 			M31 = m31; M32 = m32; M33 = m33; M34 = m34;
 			M41 = m41; M42 = m42; M43 = m43; M44 = m44;
+#endif
 		}
 		
 		#region Vector Properties
@@ -437,6 +510,12 @@ namespace Mono.GameMath
 		
 		public static void Add (ref Matrix matrix1, ref Matrix matrix2, out Matrix result)
 		{
+#if SIMD
+			result.r1 = matrix1.r1 + matrix2.r1;
+			result.r2 = matrix1.r2 + matrix2.r2;
+			result.r3 = matrix1.r3 + matrix2.r3;
+			result.r4 = matrix1.r4 + matrix2.r4;
+#else
 			result.M11 = matrix1.M11 + matrix2.M11;
 			result.M12 = matrix1.M12 + matrix2.M12;
 			result.M13 = matrix1.M13 + matrix2.M13;
@@ -456,17 +535,55 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M42 + matrix2.M42;
 			result.M43 = matrix1.M43 + matrix2.M43;
 			result.M44 = matrix1.M44 + matrix2.M44;
+#endif
 		}
 		
 		public static Matrix Multiply (Matrix matrix1, Matrix matrix2)
 		{
+#if SIMD
+			//sse version only sets the result when the calculation is complete
+			Multiply (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
+#else
+			//non-sse version needs m1 and m1 to remain unchanged
 			Matrix result;
 			Multiply (ref matrix1, ref matrix2, out result);
 			return result;
+#endif
 		}
 		
 		public static void Multiply (ref Matrix matrix1, ref Matrix matrix2, out Matrix result)
 		{
+#if SIMD
+			//FIXME where is my fused multiply-add?
+			Vector4f a1 = matrix1.r1, a2 = matrix1.r2, a3 = matrix1.r3, a4 = matrix1.r4;
+			Vector4f b1 = matrix2.r1, b2 = matrix2.r2, b3 = matrix2.r3, b4 = matrix2.r4;
+			
+			Vector4f c1 = a1.Shuffle (ShuffleSel.ExpandX) * b1;
+			Vector4f c2 = a2.Shuffle (ShuffleSel.ExpandX) * b2;
+			Vector4f c3 = a3.Shuffle (ShuffleSel.ExpandX) * b3;
+			Vector4f c4 = a4.Shuffle (ShuffleSel.ExpandX) * b4;
+			
+			c1 += a1.Shuffle (ShuffleSel.ExpandY) * b1;
+			c2 += a2.Shuffle (ShuffleSel.ExpandY) * b2;
+			c3 += a3.Shuffle (ShuffleSel.ExpandY) * b3;
+			c4 += a4.Shuffle (ShuffleSel.ExpandY) * b4;
+			
+			c1 += a1.Shuffle (ShuffleSel.ExpandZ) * b1;
+			c2 += a2.Shuffle (ShuffleSel.ExpandZ) * b2;
+			c3 += a3.Shuffle (ShuffleSel.ExpandZ) * b3;
+			c4 += a4.Shuffle (ShuffleSel.ExpandZ) * b4;
+			
+			c1 += a1.Shuffle (ShuffleSel.ExpandW) * b1;
+			c2 += a2.Shuffle (ShuffleSel.ExpandW) * b2;
+			c3 += a3.Shuffle (ShuffleSel.ExpandW) * b3;
+			c4 += a4.Shuffle (ShuffleSel.ExpandW) * b4;
+			
+			result.r1 = c1;
+			result.r2 = c2;
+			result.r3 = c3;
+			result.r4 = c4;
+#else
 			result.M11 = matrix1.M11*matrix2.M11 + matrix1.M12*matrix2.M21 + matrix1.M13*matrix2.M31 + matrix1.M14*matrix2.M41;
 			result.M12 = matrix1.M11*matrix2.M12 + matrix1.M12*matrix2.M22 + matrix1.M13*matrix2.M32 + matrix1.M14*matrix2.M42;
 			result.M13 = matrix1.M11*matrix2.M13 + matrix1.M12*matrix2.M23 + matrix1.M13*matrix2.M33 + matrix1.M14*matrix2.M43;
@@ -486,17 +603,24 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M41*matrix2.M12 + matrix1.M42*matrix2.M22 + matrix1.M43*matrix2.M32 + matrix1.M44*matrix2.M42;
 			result.M43 = matrix1.M41*matrix2.M13 + matrix1.M42*matrix2.M23 + matrix1.M43*matrix2.M33 + matrix1.M44*matrix2.M43;
 			result.M44 = matrix1.M41*matrix2.M14 + matrix1.M42*matrix2.M24 + matrix1.M43*matrix2.M34 + matrix1.M44*matrix2.M44;
+#endif
 		}
 		
 		public static Matrix Multiply (Matrix matrix1, float scaleFactor)
 		{
-			Matrix result;
-			Multiply (ref matrix1, scaleFactor, out result);
-			return result;
+			Multiply (ref matrix1, scaleFactor, out matrix1);
+			return matrix1;
 		}
 		
 		public static void Multiply (ref Matrix matrix1, float scaleFactor, out Matrix result)
 		{
+#if SIMD
+			Vector4f scale = new Vector4f (scaleFactor);
+			result.r1 = matrix1.r1 * scale;
+			result.r2 = matrix1.r2 * scale;
+			result.r3 = matrix1.r3 * scale;
+			result.r4 = matrix1.r4 * scale;
+#else
 			result.M11 = matrix1.M11 * scaleFactor;
 			result.M12 = matrix1.M12 * scaleFactor;
 			result.M13 = matrix1.M13 * scaleFactor;
@@ -516,17 +640,24 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M42 * scaleFactor;
 			result.M43 = matrix1.M43 * scaleFactor;
 			result.M44 = matrix1.M44 * scaleFactor;
+#endif
 		}
 		
 		public static Matrix Negate (Matrix matrix)
 		{
-			Matrix result;
-			Negate (ref matrix, out result);
-			return result;
+			Negate (ref matrix, out matrix);
+			return matrix;
 		}
 		
 		public static void Negate (ref Matrix matrix, out Matrix result)
 		{
+#if SIMD
+			Vector4f sign = new Vector4f (-0.0f);
+			result.r1 = matrix.r1 ^ sign;
+			result.r2 = matrix.r2 ^ sign;
+			result.r3 = matrix.r3 ^ sign;
+			result.r4 = matrix.r4 ^ sign;
+#else
 			result.M11 = -matrix.M11;
 			result.M12 = -matrix.M12;
 			result.M13 = -matrix.M13;
@@ -546,17 +677,23 @@ namespace Mono.GameMath
 			result.M42 = -matrix.M42;
 			result.M43 = -matrix.M43;
 			result.M44 = -matrix.M44;
+#endif
 		}
 		
 		public static Matrix Subtract (Matrix matrix1, Matrix matrix2)
 		{
-			Matrix result;
-			Subtract (ref matrix1, ref matrix2, out result);
-			return result;
+			Subtract (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
 		}
 		
 		public static void Subtract (ref Matrix matrix1, ref Matrix matrix2, out Matrix result)
 		{
+#if SIMD
+			result.r1 = matrix1.r1 - matrix2.r1;
+			result.r2 = matrix1.r2 - matrix2.r2;
+			result.r3 = matrix1.r3 - matrix2.r3;
+			result.r4 = matrix1.r4 - matrix2.r4;
+#else
 			result.M11 = matrix1.M11 - matrix2.M11;
 			result.M12 = matrix1.M12 - matrix2.M12;
 			result.M13 = matrix1.M13 - matrix2.M13;
@@ -576,17 +713,23 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M42 - matrix2.M42;
 			result.M43 = matrix1.M43 - matrix2.M43;
 			result.M44 = matrix1.M44 - matrix2.M44;
+#endif
 		}
 		
 		public static Matrix Divide (Matrix matrix1, Matrix matrix2)
 		{
-			Matrix result;
-			Divide (ref matrix1, ref matrix2, out result);
-			return result;
+			Divide (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
 		}
 		
 		public static void Divide (ref Matrix matrix1, ref Matrix matrix2, out Matrix result)
 		{
+#if SIMD
+			result.r1 = matrix1.r1 * matrix2.r1;
+			result.r2 = matrix1.r2 * matrix2.r2;
+			result.r3 = matrix1.r3 * matrix2.r3;
+			result.r4 = matrix1.r4 * matrix2.r4;
+#else
 			result.M11 = matrix1.M11 / matrix2.M11;
 			result.M12 = matrix1.M12 / matrix2.M12;
 			result.M13 = matrix1.M13 / matrix2.M13;
@@ -606,17 +749,24 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M42 / matrix2.M42;
 			result.M43 = matrix1.M43 / matrix2.M43;
 			result.M44 = matrix1.M44 / matrix2.M44;
+#endif
 		}
 		
 		public static Matrix Divide (Matrix matrix1, float divider)
 		{
-			Matrix result;
-			Divide (ref matrix1, divider, out result);
-			return result;
+			Divide (ref matrix1, divider, out matrix1);
+			return matrix1;
 		}
 		
 		public static void Divide (ref Matrix matrix1, float divider, out Matrix result)
 		{
+#if SIMD
+			Vector4f divisor = new Vector4f (divider);
+			result.r1 = matrix1.r1 / divisor;
+			result.r2 = matrix1.r2 / divisor;
+			result.r3 = matrix1.r3 / divisor;
+			result.r4 = matrix1.r4 / divisor;
+#else
 			result.M11 = matrix1.M11 / divider;
 			result.M12 = matrix1.M12 / divider;
 			result.M13 = matrix1.M13 / divider;
@@ -636,6 +786,7 @@ namespace Mono.GameMath
 			result.M42 = matrix1.M42 / divider;
 			result.M43 = matrix1.M43 / divider;
 			result.M44 = matrix1.M44 / divider;
+#endif
 		}
 		
 		#endregion
@@ -644,42 +795,58 @@ namespace Mono.GameMath
 		
 		public static Matrix operator + (Matrix matrix1, Matrix matrix2)
 		{
-			return Add (matrix1, matrix2);
+			Add (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
 		}
 		
 		public static Matrix operator / (Matrix matrix, float divider)
 		{
-			return Divide (matrix, divider);
+			Divide (ref matrix, divider, out matrix);
+			return matrix;
 		}
 		
 		public static Matrix operator / (Matrix matrix1, Matrix matrix2)
 		{
-			return Divide (matrix1, matrix2);
+			Divide (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
 		}
 		
 		public static Matrix operator * (Matrix matrix1, Matrix matrix2)
 		{
-			return Multiply (matrix1, matrix2);
+#if SIMD
+			//sse version only sets the result when the calculation is complete
+			Multiply (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
+#else
+			//non-sse version needs m1 and m1 to remain unchanged
+			Matrix result;
+			Multiply (ref matrix1, ref matrix2, out result);
+			return result;
+#endif
 		}
 		
 		public static Matrix operator * (Matrix matrix, float scaleFactor)
 		{
-			return Multiply (matrix, scaleFactor);
+			Multiply (ref matrix, scaleFactor, out matrix);
+			return matrix;
 		}
 		
 		public static Matrix operator * (float scaleFactor, Matrix matrix)
 		{
-			return Multiply (matrix, scaleFactor);
+			Multiply (ref matrix, scaleFactor, out matrix);
+			return matrix;
 		}
 		
 		public static Matrix operator - (Matrix matrix1, Matrix matrix2)
 		{
-			return Subtract (matrix1, matrix2);
+			Subtract (ref matrix1, ref matrix2, out matrix1);
+			return matrix1;
 		}
 		
 		public static Matrix operator - (Matrix matrix)
 		{
-			return Negate (matrix);
+			Negate (ref matrix, out matrix);
+			return matrix;
 		}
 		
 		#endregion
@@ -750,7 +917,15 @@ namespace Mono.GameMath
 		
 		public bool Equals (Matrix other)
 		{
-			return other == this;
+#if SIMD
+			return r1 == other.r1 && r2 == other.r2 && r3 == other.r3 && r4 == other.r4; 
+#else
+			return
+				M11 == other.M11 && M12 == other.M12 && M13 == other.M13 && M14 == other.M14 &&
+				M21 == other.M21 && M22 == other.M22 && M23 == other.M23 && M24 == other.M24 &&
+				M31 == other.M31 && M32 == other.M32 && M33 == other.M33 && M34 == other.M34 &&
+				M41 == other.M41 && M42 == other.M42 && M43 == other.M43 && M44 == other.M44;
+#endif
 		}
 		
 		public override bool Equals (object obj)
@@ -760,29 +935,84 @@ namespace Mono.GameMath
 		
 		public override int GetHashCode ()
 		{
+#if SIMD
+			unsafe {
+				Vector4f f = r1;
+				Vector4i i = *((Vector4i*)&f);
+				i = i ^ i.Shuffle (ShuffleSel.Swap);
+				i = i ^ i.Shuffle (ShuffleSel.RotateLeft);
+				f = r2;
+				Vector4i j =  *((Vector4i*)&f);
+				j = j ^ j.Shuffle (ShuffleSel.Swap);
+				j = j ^ j.Shuffle (ShuffleSel.RotateLeft);
+				f = r3;
+				Vector4i k =  *((Vector4i*)&f);
+				k = k ^ k.Shuffle (ShuffleSel.Swap);
+				k = k ^ k.Shuffle (ShuffleSel.RotateLeft);
+				f = r4;
+				Vector4i l =  *((Vector4i*)&f);
+				l = l ^ l.Shuffle (ShuffleSel.Swap);
+				l = l ^ l.Shuffle (ShuffleSel.RotateLeft);
+				return (i ^ j ^ k ^ l).X;
+			}
+#elif UNSAFE
+			unsafe {
+				float f = M11;
+				int acc = *((int*)&f);
+				f = M12; acc ^= *((int*)&f);
+				f = M13; acc ^= *((int*)&f);
+				f = M14; acc ^= *((int*)&f);
+				
+				f = M21; acc ^= *((int*)&f);
+				f = M22; acc ^= *((int*)&f);
+				f = M23; acc ^= *((int*)&f);
+				f = M24; acc ^= *((int*)&f);
+				
+				f = M31; acc ^= *((int*)&f);
+				f = M32; acc ^= *((int*)&f);
+				f = M33; acc ^= *((int*)&f);
+				f = M34; acc ^= *((int*)&f);
+				
+				f = M41; acc ^= *((int*)&f);
+				f = M42; acc ^= *((int*)&f);
+				f = M43; acc ^= *((int*)&f);
+				f = M44; acc ^= *((int*)&f);
+				return acc;
+			}
+			
+#else
 			return
 				M11.GetHashCode () ^ M12.GetHashCode () ^ M13.GetHashCode () ^ M14.GetHashCode () ^
 				M21.GetHashCode () ^ M22.GetHashCode () ^ M23.GetHashCode () ^ M24.GetHashCode () ^
 				M31.GetHashCode () ^ M32.GetHashCode () ^ M33.GetHashCode () ^ M34.GetHashCode () ^
 				M41.GetHashCode () ^ M42.GetHashCode () ^ M43.GetHashCode () ^ M44.GetHashCode (); 
+#endif
 		}
 		
 		public static bool operator == (Matrix a, Matrix b)
 		{
+#if SIMD
+			return a.r1 == b.r1 && a.r2 == b.r2 && a.r3 == b.r3 && a.r4 == b.r4; 
+#else
 			return
 				a.M11 == b.M11 && a.M12 == b.M12 && a.M13 == b.M13 && a.M14 == b.M14 &&
 				a.M21 == b.M21 && a.M22 == b.M22 && a.M23 == b.M23 && a.M24 == b.M24 &&
 				a.M31 == b.M31 && a.M32 == b.M32 && a.M33 == b.M33 && a.M34 == b.M34 &&
 				a.M41 == b.M41 && a.M42 == b.M42 && a.M43 == b.M43 && a.M44 == b.M44;
+#endif
 		}
 		
 		public static bool operator != (Matrix a, Matrix b)
 		{
+#if SIMD
+			return a.r1 != b.r1 || a.r2 != b.r2 || a.r3 != b.r3 || a.r4 != b.r4; 
+#else
 			return
 				a.M11 != b.M11 || a.M12 != b.M12 || a.M13 != b.M13 && a.M14 != b.M14 ||
 				a.M21 != b.M21 || a.M22 != b.M22 || a.M23 != b.M23 && a.M24 != b.M24 ||
 				a.M31 != b.M31 || a.M32 != b.M32 || a.M33 != b.M33 && a.M34 != b.M34 ||
 				a.M41 != b.M41 || a.M42 != b.M42 || a.M43 != b.M43 && a.M44 != b.M44;
+#endif
 		}
 		
 		# endregion
