@@ -451,32 +451,79 @@ namespace Benchmark
 		}
 		
 		#endregion
-		/*
+		
 		#region Other maths
+		
+		/*
 		
 		public static void Decompose (int times)
 		{
+			Matrix a = TestMatrix0;
+			Vector3 scale, translation;
+			Quaternion rotation;
+			bool result;
+			
+			for (int i = 0; i < times; i++) {
+				result = a.Decompose (out scale, out rotation, out translation);
+			}
 		}
 		
 		public static void Determinant (int times)
 		{
+			Matrix a = TestMatrix0;
+			float result;
+			
+			for (int i = 0; i < times; i++) {
+				result = a.Determinant ();
+			}
 		}
 		
 		public static void Invert (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				result = Matrix.Invert (a);
+			}
 		}
 		
 		public static void InvertRef (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				Matrix.Invert (ref a, out result);
+			}
 		}
+		*/
 		
 		public static void Lerp (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix b = TestMatrix1;
+			float amount = 0.6f;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				result = Matrix.Lerp (a, b, amount);
+			}
 		}
 		
 		public static void LerpRef (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix b = TestMatrix1;
+			float amount = 0.6f;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				Matrix.Lerp (ref a, ref b, amount, out result);
+			}
 		}
+		
+		/*
 		
 		public static void Transform (int times)
 		{
@@ -488,14 +535,28 @@ namespace Benchmark
 		
 		public static void Transpose (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				Matrix.Invert (ref a, out result);
+			}
 		}
 		
 		public static void TransposeRef (int times)
 		{
+			Matrix a = TestMatrix0;
+			Matrix result;
+			
+			for (int i = 0; i < times; i++) {
+				Matrix.Invert (ref a, out result);
+			}
 		}
 		
-		#endregion
 		*/
+		
+		#endregion
+		
 		#region Equality
 		
 		public static void IEquatableEquals (int times)
