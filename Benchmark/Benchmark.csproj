@@ -63,6 +63,7 @@
     <Compile Include="Micro\Vector4Test.cs" />
     <Compile Include="Micro\Vector3Test.cs" />
     <Compile Include="Micro\Vector2Test.cs" />
+    <Compile Include="Micro\MatrixTest.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

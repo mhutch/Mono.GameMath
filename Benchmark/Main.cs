@@ -48,6 +48,7 @@ namespace Benchmark
 		static void RunTests ()
 		{
 			Type[] testTypes = new [] {
+				typeof (MatrixTest),
 				typeof (Vector4Test),
 				typeof (Vector3Test),
 				typeof (Vector2Test),
