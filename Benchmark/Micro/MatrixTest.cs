@@ -539,7 +539,7 @@ namespace Benchmark
 			Matrix result;
 			
 			for (int i = 0; i < times; i++) {
-				Matrix.Transpose (ref a, out result);
+				result = Matrix.Transpose (a);
 			}
 		}
 		
