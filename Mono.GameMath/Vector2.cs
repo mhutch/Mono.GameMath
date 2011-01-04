@@ -440,8 +440,8 @@ namespace Mono.GameMath
 		
 		public static void Max (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = MathHelper.Max (value1.X, value2.X);
-			result.Y = MathHelper.Max (value1.X, value2.X);
+			result.X = System.Math.Max (value1.X, value2.X);
+			result.Y = System.Math.Max (value1.X, value2.X);
 		}
 		
 		public static Vector2 Min (Vector2 value1, Vector2 value2)
@@ -452,8 +452,8 @@ namespace Mono.GameMath
 		
 		public static void Min (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = MathHelper.Min (value1.X, value2.X);
-			result.Y = MathHelper.Min (value1.X, value2.X);
+			result.X = System.Math.Min (value1.X, value2.X);
+			result.Y = System.Math.Min (value1.X, value2.X);
 		}
 		
 		public void Normalize ()

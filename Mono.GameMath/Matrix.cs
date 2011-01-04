@@ -927,9 +927,21 @@ namespace Mono.GameMath
 		public static Matrix Transpose (Matrix matrix)
 		{
 #if SIMD
-			//sse version of transpose doesn't need source unaltered
-			Transpose (ref matrix, out matrix);
-			return matrix;
+			Vector4f xmm0 = matrix.r1, xmm1 = matrix.r2, xmm2 = matrix.r3, xmm3 = matrix.r4;
+			Vector4f xmm4 = xmm0;
+			xmm0 = VectorOperations.InterleaveLow  (xmm0, xmm2);
+			xmm4 = VectorOperations.InterleaveHigh (xmm4, xmm2);
+			xmm2 = xmm1;
+			xmm1 = VectorOperations.InterleaveLow  (xmm1, xmm3);
+			xmm2 = VectorOperations.InterleaveHigh (xmm2, xmm3);
+			xmm3 = xmm0;
+			xmm0 = VectorOperations.InterleaveLow  (xmm0, xmm1);
+			xmm3 = VectorOperations.InterleaveHigh (xmm3, xmm1);
+			xmm1 = xmm4;
+			xmm1 = VectorOperations.InterleaveLow  (xmm1, xmm2);
+			xmm4 = VectorOperations.InterleaveHigh (xmm4, xmm2);
+			
+			return new Matrix (xmm0, xmm3, xmm1, xmm4);
 #else
 			return new Matrix (
 				matrix.m11, matrix.m21, matrix.m31, matrix.m41,
