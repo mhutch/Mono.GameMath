@@ -650,7 +650,21 @@ namespace Mono.GameMath
 		
 		public static void Reflect (ref Vector3 vector, ref Vector3 normal, out Vector3 result)
 		{
-			throw new NotImplementedException ();
+#if SIMD
+			Vector4f v = vector.v4, n = normal.v4;
+			Vector4f r0 = v * n;
+			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
+			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
+			r0 = r0.Sqrt ();
+			result.v4 = (r0 + r0) * n - v;
+			
+#else
+			float d2 = (float) System.Math.Sqrt (normal.X * vector.X + normal.Y * vector.Y + normal.Z * vector.Z);
+			d2 = d2 + d2;
+			result.X = d2 * normal.X - vector.X;
+			result.Y = d2 * normal.Y - vector.Y;
+			result.Z = d2 * normal.Z - vector.Z;
+#endif
 		}
 		
 		#endregion

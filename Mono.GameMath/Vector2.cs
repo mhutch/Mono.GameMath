@@ -493,7 +493,15 @@ namespace Mono.GameMath
 		
 		public static void Reflect (ref Vector2 vector, ref Vector2 normal, out Vector2 result)
 		{
-			throw new NotImplementedException ();
+			//assuming normal is normalized, r = -v + 2 * n * (n . v)
+			//http://mathworld.wolfram.com/Reflection.html
+			//calculate the common part once
+			float d2 = (float) System.Math.Sqrt (normal.X * vector.X + normal.Y * vector.Y);
+			// add is much faster than multiply by 2
+			d2 = d2 + d2;
+			//subtract faster than negate and add
+			result.X = d2 * normal.X - vector.X;
+			result.Y = d2 * normal.Y - vector.Y;
 		}
 		
 		#endregion
