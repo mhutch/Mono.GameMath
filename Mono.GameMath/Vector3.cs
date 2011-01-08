@@ -39,7 +39,7 @@ namespace Mono.GameMath
 		public float X { get { return v4.X; } set { v4.X = value; } }
 		public float Y { get { return v4.Y; } set { v4.Y = value; } }
 		public float Z { get { return v4.Z; } set { v4.Z = value; } }
-		Vector3 (Vector4f v4) { this.v4 = v4; }
+		internal Vector3 (Vector4f v4) { this.v4 = v4; }
 #else
 		internal float x, y, z;
 		public float X { get { return x; } set { x = value; } }
@@ -128,7 +128,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Mono.GameMath.Vector3 (value1.v4 + value2.v4);
 #else
-			return new Vector3 (value1.X + value2.X, value1.Y + value2.Y, value1.Z + value2.Z);
+			return new Vector3 (value1.x + value2.x, value1.y + value2.y, value1.z + value2.z);
 #endif
 		}
 		
@@ -137,9 +137,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 + value2.v4;
 #else
-			result.X = value1.X + value2.X;
-			result.Y = value1.Y + value2.Y;
-			result.Z = value1.Z + value2.Z;
+			result.x = value1.x + value2.x;
+			result.y = value1.y + value2.y;
+			result.z = value1.z + value2.z;
 #endif
 		}
 		
@@ -148,7 +148,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 / new Vector4f (value2));
 #else
-			return new Vector3 (value1.X / value2, value1.Y / value2, value1.Z / value2);
+			return new Vector3 (value1.x / value2, value1.y / value2, value1.z / value2);
 #endif
 		}
 		
@@ -157,9 +157,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 / new Vector4f (value2);
 #else
-			result.X = value1.X / value2;
-			result.Y = value1.Y / value2;
-			result.Z = value1.Z / value2;
+			result.x = value1.x / value2;
+			result.y = value1.y / value2;
+			result.z = value1.z / value2;
 #endif
 		}
 		
@@ -168,7 +168,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 / value2.v4);
 #else
-			return new Vector3 (value1.X / value2.X, value1.Y / value2.Y, value1.Z / value2.Z);
+			return new Vector3 (value1.x / value2.x, value1.y / value2.y, value1.z / value2.z);
 #endif
 		}
 		
@@ -177,9 +177,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 / value2.v4;
 #else
-			result.X = value1.X / value2.X;
-			result.Y = value1.Y / value2.Y;
-			result.Z = value1.Z / value2.Z;
+			result.x = value1.x / value2.x;
+			result.y = value1.y / value2.y;
+			result.z = value1.z / value2.z;
 #endif
 		}
 		
@@ -188,7 +188,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 * new Vector4f (scaleFactor));
 #else
-			return new Vector3 (value1.X * scaleFactor, value1.Y * scaleFactor, value1.Z * scaleFactor);
+			return new Vector3 (value1.x * scaleFactor, value1.y * scaleFactor, value1.z * scaleFactor);
 #endif
 		}
 		
@@ -197,9 +197,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 * new Vector4f (scaleFactor);
 #else
-			result.X = value1.X * scaleFactor;
-			result.Y = value1.Y * scaleFactor;
-			result.Z = value1.Z * scaleFactor;
+			result.x = value1.x * scaleFactor;
+			result.y = value1.y * scaleFactor;
+			result.z = value1.z * scaleFactor;
 #endif
 		}
 		
@@ -208,7 +208,7 @@ namespace Mono.GameMath
 #if SIMD
 		return new Vector3 (value1.v4 * value2.v4);	
 #else
-		return new Vector3 (value1.X * value2.X, value1.Y * value2.Y, value1.Z * value2.Z);
+		return new Vector3 (value1.x * value2.x, value1.y * value2.y, value1.z * value2.z);
 #endif
 		}
 		
@@ -217,9 +217,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 * value2.v4;
 #else
-			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.Y;
-			result.Z = value1.Z * value2.Z;
+			result.x = value1.x * value2.x;
+			result.y = value1.y * value2.y;
+			result.z = value1.z * value2.z;
 #endif
 		}
 		
@@ -228,7 +228,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value.v4 ^ new Vector4f (-0.0f));
 #else
-			return new Vector3 (- value.X, - value.Y, - value.Z);
+			return new Vector3 (- value.x, - value.y, - value.z);
 #endif
 		}
 		
@@ -237,9 +237,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value.v4 ^ new Vector4f (-0.0f);
 #else
-			result.X = - value.X;
-			result.Y = - value.Y;
-			result.Z = - value.Z;
+			result.x = - value.x;
+			result.y = - value.y;
+			result.z = - value.z;
 #endif
 		}
 		
@@ -248,7 +248,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 - value2.v4);
 #else
-			return new Vector3 (value1.X - value2.X, value1.Y - value2.Y, value1.Z - value2.Z);
+			return new Vector3 (value1.x - value2.x, value1.y - value2.y, value1.z - value2.z);
 #endif
 		}
 		
@@ -257,9 +257,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 - value2.v4;
 #else
-			result.X = value1.X - value2.X;
-			result.Y = value1.Y - value2.Y;
-			result.Z = value1.Z - value2.Z;
+			result.x = value1.x - value2.x;
+			result.y = value1.y - value2.y;
+			result.z = value1.z - value2.z;
 #endif
 		}
 		
@@ -272,7 +272,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Mono.GameMath.Vector3 (value1.v4 + value2.v4);
 #else
-			return new Vector3 (value1.X + value2.X, value1.Y + value2.Y, value1.Z + value2.Z);
+			return new Vector3 (value1.x + value2.x, value1.y + value2.y, value1.z + value2.z);
 #endif
 		}
 		
@@ -281,7 +281,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value.v4 / new Vector4f (divider));
 #else
-			return new Vector3 (value.X / divider, value.Y / divider, value.Z / divider);
+			return new Vector3 (value.x / divider, value.y / divider, value.z / divider);
 #endif
 		}
 		
@@ -290,7 +290,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 / value2.v4);
 #else
-			return new Vector3 (value1.X / value2.X, value1.Y / value2.Y, value1.Z / value2.Z);
+			return new Vector3 (value1.x / value2.x, value1.y / value2.y, value1.z / value2.z);
 #endif
 		}
 		
@@ -299,7 +299,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 * value2.v4);
 #else
-			return new Vector3 (value1.X * value2.X, value1.Y * value2.Y, value1.Z * value2.Z);
+			return new Vector3 (value1.x * value2.x, value1.y * value2.y, value1.z * value2.z);
 #endif
 		}
 		
@@ -308,7 +308,7 @@ namespace Mono.GameMath
 #if SIMD
 		return new Vector3 (value.v4 * scaleFactor);	
 #else
-		return new Vector3 (value.X * scaleFactor, value.Y * scaleFactor, value.Z * scaleFactor);
+		return new Vector3 (value.x * scaleFactor, value.y * scaleFactor, value.z * scaleFactor);
 #endif
 		}
 		
@@ -317,7 +317,7 @@ namespace Mono.GameMath
 #if SIMD
 		return new Vector3 (scaleFactor* value.v4);	
 #else
-		return new Vector3 (value.X * scaleFactor, value.Y * scaleFactor, value.Z * scaleFactor);
+		return new Vector3 (value.x * scaleFactor, value.y * scaleFactor, value.z * scaleFactor);
 #endif
 		}
 		
@@ -326,7 +326,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value1.v4 - value2.v4);
 #else
-			return new Vector3 (value1.X - value2.X, value1.Y - value2.Y, value1.Z - value2.Z);
+			return new Vector3 (value1.x - value2.x, value1.y - value2.y, value1.z - value2.z);
 #endif
 		}
 		
@@ -335,7 +335,7 @@ namespace Mono.GameMath
 #if SIMD
 			return new Vector3 (value.v4 ^ new Vector4f (-0.0f));
 #else
-			return new Vector3 (- value.X, - value.Y, - value.Z);
+			return new Vector3 (- value.x, - value.y, - value.z);
 #endif
 		}
 		
@@ -352,10 +352,18 @@ namespace Mono.GameMath
 		public static void CatmullRom (ref Vector3 value1, ref Vector3 value2, ref Vector3 value3, ref Vector3 value4,
 			float amount, out Vector3 result)
 		{
+#if SIMD
+			result.v4 = new Vector4f (
+				MathHelper.CatmullRom (value1.X, value2.X, value3.X, value4.X, amount),
+				MathHelper.CatmullRom (value1.Y, value2.Y, value3.Y, value4.Y, amount),
+				MathHelper.CatmullRom (value1.Z, value2.Z, value3.Z, value4.Z, amount),
+				0);
+#else
 			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.CatmullRom (value1.X, value2.X, value3.X, value4.X, amount);
-			result.Y = MathHelper.CatmullRom (value1.Y, value2.Y, value3.Y, value4.Y, amount);
-			result.Z = MathHelper.CatmullRom (value1.Z, value2.Z, value3.Z, value4.Z, amount);
+			result.x = MathHelper.CatmullRom (value1.x, value2.x, value3.x, value4.x, amount);
+			result.y = MathHelper.CatmullRom (value1.y, value2.y, value3.y, value4.y, amount);
+			result.z = MathHelper.CatmullRom (value1.z, value2.z, value3.z, value4.z, amount);
+#endif
 		}
 		
 		public static Vector3 Hermite (Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, float amount)
@@ -392,9 +400,9 @@ namespace Mono.GameMath
 			float h3 =      s3 - 2 * s2 + s;
 			float h4 =      s3 -     s2    ;
 			
-			result.X = h1 * value1.X + h2 * value2.X + h3 * tangent1.X + h4 * tangent2.X;
-			result.Y = h1 * value1.Y + h2 * value2.Y + h3 * tangent1.Y + h4 * tangent2.Y;
-			result.Z = h1 * value1.Z + h2 * value2.Z + h3 * tangent1.Z + h4 * tangent2.Z;
+			result.x = h1 * value1.x + h2 * value2.x + h3 * tangent1.x + h4 * tangent2.x;
+			result.y = h1 * value1.y + h2 * value2.y + h3 * tangent1.y + h4 * tangent2.y;
+			result.z = h1 * value1.z + h2 * value2.z + h3 * tangent1.z + h4 * tangent2.z;
 #endif
 		}
 		
@@ -409,9 +417,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 + (value2.v4 - value1.v4) * amount; 
 #else
-			result.X = value1.X + (value2.X - value1.X) * amount;
-			result.Y = value1.Y + (value2.Y - value1.Y) * amount;
-			result.Z = value1.Z + (value2.Z - value1.Z) * amount;
+			result.x = value1.x + (value2.x - value1.x) * amount;
+			result.y = value1.y + (value2.y - value1.y) * amount;
+			result.z = value1.z + (value2.z - value1.z) * amount;
 #endif
 		}
 		
@@ -427,9 +435,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = value1.v4 + (value2.v4 - value1.v4) * scale; 
 #else
-			result.X = value1.X + (value2.X - value1.X) * scale;
-			result.Y = value1.Y + (value2.Y - value1.Y) * scale;
-			result.Z = value1.Z + (value2.Z - value1.Z) * scale;
+			result.x = value1.x + (value2.x - value1.x) * scale;
+			result.y = value1.y + (value2.y - value1.y) * scale;
+			result.z = value1.z + (value2.z - value1.z) * scale;
 #endif
 		}
 		
@@ -446,10 +454,18 @@ namespace Mono.GameMath
 		public static void Barycentric (ref Vector3 value1, ref Vector3 value2, ref Vector3 value3, float amount1,
 			float amount2, out Vector3 result)
 		{
+#if SIMD
+			result.v4 = new Vector4f (
+				MathHelper.Barycentric (value1.X, value2.X, value3.X, amount1, amount2),
+				MathHelper.Barycentric (value1.Y, value2.Y, value3.Y, amount1, amount2),
+				MathHelper.Barycentric (value1.Z, value2.Z, value3.Z, amount1, amount2),
+				0);
+#else
 			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.Barycentric (value1.X, value2.X, value3.X, amount1, amount2);
-			result.Y = MathHelper.Barycentric (value1.Y, value2.Y, value3.Y, amount1, amount2);
-			result.Z = MathHelper.Barycentric (value1.Z, value2.Z, value3.Z, amount1, amount2);
+			result.x = MathHelper.Barycentric (value1.x, value2.x, value3.x, amount1, amount2);
+			result.y = MathHelper.Barycentric (value1.y, value2.y, value3.y, amount1, amount2);
+			result.z = MathHelper.Barycentric (value1.z, value2.z, value3.z, amount1, amount2);
+#endif
 		}
 		
 		public static Vector3 Clamp (Vector3 value1, Vector3 min, Vector3 max)
@@ -463,9 +479,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = VectorOperations.Min (VectorOperations.Max (value1.v4, min.v4), max.v4);
 #else
-			result.X = MathHelper.Clamp (value1.X, min.X, max.X);
-			result.Y = MathHelper.Clamp (value1.Y, min.Y, max.Y);
-			result.Z = MathHelper.Clamp (value1.Z, min.Z, max.Z);
+			result.x = MathHelper.Clamp (value1.x, min.x, max.x);
+			result.y = MathHelper.Clamp (value1.y, min.y, max.y);
+			result.z = MathHelper.Clamp (value1.z, min.z, max.z);
 #endif
 		}
 		
@@ -487,9 +503,9 @@ namespace Mono.GameMath
 				r1.Shuffle (ShuffleSel.XFromZ | ShuffleSel.YFromX | ShuffleSel.ZFromY | ShuffleSel.WFromW) *
 				r2.Shuffle (ShuffleSel.XFromY | ShuffleSel.YFromZ | ShuffleSel.ZFromX | ShuffleSel.WFromW);
 #else
-			result.X = vector1.Y * vector2.Z - vector1.Z * vector2.Y;
-			result.Y = vector1.Z * vector2.X - vector1.X * vector2.Z;
-			result.Z = vector1.X * vector2.Y - vector1.Y * vector2.X;
+			result.x = vector1.y * vector2.z - vector1.z * vector2.y;
+			result.y = vector1.z * vector2.x - vector1.x * vector2.z;
+			result.z = vector1.x * vector2.y - vector1.y * vector2.x;
 #endif
 		}
 		
@@ -550,7 +566,7 @@ namespace Mono.GameMath
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
 			result = r0.Sqrt ().X;
 #else
-			result = (vector1.X * vector2.X) + (vector1.Y * vector2.Y) + (vector1.Z * vector2.Z);
+			result = (vector1.x * vector2.x) + (vector1.y * vector2.y) + (vector1.z * vector2.z);
 #endif
 		}
 		
@@ -576,7 +592,7 @@ namespace Mono.GameMath
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
 			return r0.X;
 #else
-			return (X * X) + (Y * Y) + (Z * Z);
+			return (x * x) + (y * y) + (z * z);
 #endif
 		}
 		
@@ -591,9 +607,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = VectorOperations.Max (value1.v4, value2.v4);
 #else
-			result.X = System.Math.Max (value1.X, value2.X);
-			result.Y = System.Math.Max (value1.Y, value2.Y);
-			result.Z = System.Math.Max (value1.Z, value2.Z);
+			result.x = System.Math.Max (value1.x, value2.x);
+			result.y = System.Math.Max (value1.y, value2.y);
+			result.z = System.Math.Max (value1.z, value2.z);
 #endif
 		}
 		
@@ -608,9 +624,9 @@ namespace Mono.GameMath
 #if SIMD
 			result.v4 = VectorOperations.Min (value1.v4, value2.v4);
 #else
-			result.X = System.Math.Min (value1.X, value2.X);
-			result.Y = System.Math.Min (value1.Y, value2.Y);
-			result.Z = System.Math.Min (value1.Z, value2.Z);
+			result.x = System.Math.Min (value1.x, value2.x);
+			result.y = System.Math.Min (value1.y, value2.y);
+			result.z = System.Math.Min (value1.z, value2.z);
 #endif
 		}
 		
@@ -635,9 +651,9 @@ namespace Mono.GameMath
 			result.v4 = value.v4 / r0.Sqrt ();
 #else
 			var l = value.Length ();
-			result.X = value.X / l;
-			result.Y = value.Y / l;
-			result.Z = value.Z / l;
+			result.x = value.x / l;
+			result.y = value.y / l;
+			result.z = value.z / l;
 #endif
 		}
 		
@@ -659,11 +675,11 @@ namespace Mono.GameMath
 			result.v4 = (r0 + r0) * n - v;
 			
 #else
-			float d2 = (float) System.Math.Sqrt (normal.X * vector.X + normal.Y * vector.Y + normal.Z * vector.Z);
+			float d2 = (float) System.Math.Sqrt (normal.x * vector.x + normal.y * vector.y + normal.z * vector.z);
 			d2 = d2 + d2;
-			result.X = d2 * normal.X - vector.X;
-			result.Y = d2 * normal.Y - vector.Y;
-			result.Z = d2 * normal.Z - vector.Z;
+			result.x = d2 * normal.x - vector.x;
+			result.y = d2 * normal.y - vector.y;
+			result.z = d2 * normal.z - vector.z;
 #endif
 		}
 		
@@ -797,7 +813,7 @@ namespace Mono.GameMath
 #if SIMD
 			return v4 == other.v4;
 #else
-			return X == other.X && Y == other.Y && Z == other.Z;
+			return x == other.x && y == other.y && z == other.z;
 #endif
 		}
 		
@@ -818,17 +834,17 @@ namespace Mono.GameMath
 			}
 #elif UNSAFE
 			unsafe {
-				float f = X;
+				float f = x;
 				int acc = *((int*)&f);
-				f = Y;
+				f = y;
 				acc ^= *((int*)&f);
-				f = Z;
+				f = z;
 				acc ^= *((int*)&f);
 				return acc;
 			}
 			
 #else
-			return X.GetHashCode () ^ Y.GetHashCode () ^ Z.GetHashCode ();
+			return x.GetHashCode () ^ y.GetHashCode () ^ z.GetHashCode ();
 #endif
 		}
 		
@@ -837,7 +853,7 @@ namespace Mono.GameMath
 #if SIMD
 			return a.v4 == b.v4;
 #else
-			return a.X == b.X && a.Y == b.Y && a.Z == b.Z;
+			return a.x == b.x && a.y == b.y && a.z == b.z;
 #endif
 		}
 		
@@ -846,7 +862,7 @@ namespace Mono.GameMath
 #if SIMD
 			return a.v4 != b.v4;
 #else
-			return a.X != b.X || a.Y != b.Y || a.Z != b.Z;
+			return a.x != b.x || a.y != b.y || a.z != b.z;
 #endif
 		}
 		

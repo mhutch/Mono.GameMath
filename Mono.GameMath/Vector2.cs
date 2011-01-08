@@ -34,17 +34,20 @@ namespace Mono.GameMath
 	[Serializable]
 	public struct Vector2 : IEquatable<Vector2>
 	{
-		public float X, Y;
+		float x, y;
+		
+		public float X { get { return x; } }
+		public float Y { get { return y; } }
 		
 		public Vector2 (float value)
 		{
-			X = Y = value;
+			x = y = value;
 		}
 		
 		public Vector2 (float x, float y)
 		{
-			X = x;
-			Y = y;
+			this.x = x;
+			this.y = y;
 		}
 		
 		#region Static properties
@@ -85,51 +88,51 @@ namespace Mono.GameMath
 		
 		public static void Add (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = value1.X + value2.X;
-			result.Y = value1.Y + value2.Y;
+			result.x = value1.x + value2.x;
+			result.y = value1.y + value2.y;
 		}
 		
 		public static Vector2 Multiply (Vector2 value1, float scaleFactor)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) * new Vector4f (scaleFactor);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X * scaleFactor, value1.Y * scaleFactor);
+			return new Vector2 (value1.x * scaleFactor, value1.y * scaleFactor);
 #endif
 		}
 		
 		public static void Multiply (ref Vector2 value1, float scaleFactor, out Vector2 result)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (scaleFactor);
-			result.X = v4.X;
-			result.Y = v4.Y;
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) * new Vector4f (scaleFactor);
+			result.x = v4.X;
+			result.y = v4.Y;
 #else
-			result.X = value1.X * scaleFactor;
-			result.Y = value1.Y * scaleFactor;
+			result.x = value1.x * scaleFactor;
+			result.y = value1.y * scaleFactor;
 #endif
 		}
 		
 		public static Vector2 Multiply (Vector2 value1, Vector2 value2)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) * new Vector4f (value2.x, value2.y, 0f, 0f);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X * value2.X, value1.Y * value2.Y);
+			return new Vector2 (value1.x * value2.x, value1.y * value2.y);
 #endif
 		}
 		
 		public static void Multiply (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
-			result.X = v4.X;
-			result.Y = v4.Y;
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) * new Vector4f (value2.x, value2.y, 0f, 0f);
+			result.x = v4.X;
+			result.y = v4.Y;
 #else
-			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.Y;
+			result.x = value1.x * value2.x;
+			result.y = value1.y * value2.y;
 #endif
 		}
 		
@@ -141,51 +144,51 @@ namespace Mono.GameMath
 		
 		public static void Negate (ref Vector2 value, out Vector2 result)
 		{
-			result.X = - value.X;
-			result.Y = - value.Y;
+			result.x = - value.x;
+			result.y = - value.y;
 		}
 		
 		public static Vector2 Divide (Vector2 value1, float divider)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (divider);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) / new Vector4f (divider);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X / divider, value1.Y / divider);
+			return new Vector2 (value1.x / divider, value1.y / divider);
 #endif
 		}
 		
 		public static void Divide (ref Vector2 value1, float divider, out Vector2 result)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (divider);
-			result.X = v4.X;
-			result.Y = v4.Y;
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) / new Vector4f (divider);
+			result.x = v4.X;
+			result.y = v4.Y;
 #else
-			result.X = value1.X / divider;
-			result.Y = value1.Y / divider;
+			result.x = value1.x / divider;
+			result.y = value1.y / divider;
 #endif
 		}
 		
 		public static Vector2 Divide (Vector2 value1, Vector2 value2)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) / new Vector4f (value2.x, value2.y, 0f, 0f);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X / value2.X, value1.Y / value2.X);
+			return new Vector2 (value1.x / value2.x, value1.y / value2.x);
 #endif
 		}
 		
 		public static void Divide (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
-			result.X = v4.X;
-			result.Y = v4.Y;
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) / new Vector4f (value2.x, value2.y, 0f, 0f);
+			result.x = v4.X;
+			result.y = v4.Y;
 #else
-			result.X = value1.X * value2.X;
-			result.Y = value1.Y * value2.X;
+			result.x = value1.x * value2.x;
+			result.y = value1.y * value2.x;
 #endif
 		}
 		
@@ -197,8 +200,8 @@ namespace Mono.GameMath
 		
 		public static void Subtract (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = value1.X - value2.X;
-			result.Y = value1.Y - value2.X;
+			result.x = value1.x - value2.x;
+			result.y = value1.y - value2.x;
 		}
 		
 		#endregion
@@ -207,67 +210,67 @@ namespace Mono.GameMath
 		
 		public static Vector2 operator + (Vector2 value1, Vector2 value2)
 		{
-			return new Vector2 (value1.X + value2.X, value1.Y + value2.Y);
+			return new Vector2 (value1.x + value2.x, value1.y + value2.y);
 		}
 		
 		public static Vector2 operator / (Vector2 value, float divider)
 		{
 #if SIMD
-			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) / new Vector4f (divider);
+			var v4 = new Vector4f (value.x, value.y, 0f, 0f) / new Vector4f (divider);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value.X / divider, value.Y / divider);
+			return new Vector2 (value.x / divider, value.y / divider);
 #endif
 		}
 		
 		public static Vector2 operator / (Vector2 value1, Vector2 value2)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) / new Vector4f (value2.X, value2.Y, 0f, 0f);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) / new Vector4f (value2.x, value2.y, 0f, 0f);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X / value2.X, value1.Y / value2.Y);
+			return new Vector2 (value1.x / value2.x, value1.y / value2.y);
 #endif
 		}
 		
 		public static Vector2 operator * (Vector2 value1, Vector2 value2)
 		{
 #if SIMD
-			var v4 = new Vector4f (value1.X, value1.Y, 0f, 0f) * new Vector4f (value2.X, value2.Y, 0f, 0f);
+			var v4 = new Vector4f (value1.x, value1.y, 0f, 0f) * new Vector4f (value2.x, value2.y, 0f, 0f);
 			return new Vector2 (v4.X, v4.Y);
 #else
-			return new Vector2 (value1.X * value2.X, value1.Y * value2.Y);
+			return new Vector2 (value1.x * value2.x, value1.y * value2.y);
 #endif
 		}
 		
 		public static Vector2 operator * (Vector2 value, float scaleFactor)
 		{
 #if SIMD
-			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			var v4 = new Vector4f (value.x, value.y, 0f, 0f) * new Vector4f (scaleFactor);
 			return new Vector2 (v4.X, v4.Y);	
 #else
-		return new Vector2 (value.X * scaleFactor, value.Y * scaleFactor);
+			return new Vector2 (value.x * scaleFactor, value.y * scaleFactor);
 #endif
 		}
 		
 		public static Vector2 operator * (float scaleFactor, Vector2 value)
 		{
 #if SIMD
-			var v4 = new Vector4f (value.X, value.Y, 0f, 0f) * new Vector4f (scaleFactor);
+			var v4 = new Vector4f (value.x, value.y, 0f, 0f) * new Vector4f (scaleFactor);
 			return new Vector2 (v4.X, v4.Y);	
 #else
-			return new Vector2 (value.X * scaleFactor, value.Y * scaleFactor);
+			return new Vector2 (value.x * scaleFactor, value.y * scaleFactor);
 #endif
 		}
 		
 		public static Vector2 operator - (Vector2 value1, Vector2 value2)
 		{
-			return new Vector2 (value1.X - value2.X, value1.Y - value2.Y);
+			return new Vector2 (value1.x - value2.x, value1.y - value2.y);
 		}
 		
 		public static Vector2 operator - (Vector2 value)
 		{
-			return new Vector2 (- value.X, - value.Y);
+			return new Vector2 (- value.x, - value.y);
 		}
 		
 		#endregion
@@ -284,8 +287,8 @@ namespace Mono.GameMath
 			float amount, out Vector2 result)
 		{
 			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.CatmullRom (value1.X, value2.X, value3.X, value4.X, amount);
-			result.Y = MathHelper.CatmullRom (value1.Y, value2.Y, value3.Y, value4.Y, amount);;
+			result.x = MathHelper.CatmullRom (value1.x, value2.x, value3.x, value4.x, amount);
+			result.y = MathHelper.CatmullRom (value1.y, value2.y, value3.y, value4.y, amount);;
 		}
 		
 		public static Vector2 Hermite (Vector2 value1, Vector2 tangent1, Vector2 value2, Vector2 tangent2, float amount)
@@ -306,8 +309,8 @@ namespace Mono.GameMath
 			float h3 =      s3 - 2 * s2 + s;
 			float h4 =      s3 -     s2    ;
 			
-			result.X = h1 * value1.X + h2 * value2.X + h3 * tangent1.X + h4 * tangent2.X;
-			result.Y = h1 * value1.Y + h2 * value2.Y + h3 * tangent1.Y + h4 * tangent2.Y;
+			result.x = h1 * value1.x + h2 * value2.x + h3 * tangent1.x + h4 * tangent2.x;
+			result.y = h1 * value1.y + h2 * value2.y + h3 * tangent1.y + h4 * tangent2.y;
 		}
 		
 		public static Vector2 Lerp (Vector2 value1, Vector2 value2, float amount)
@@ -351,8 +354,8 @@ namespace Mono.GameMath
 			float amount2, out Vector2 result)
 		{
 			//FIXME: probably more efficient to share work between values
-			result.X = MathHelper.Barycentric (value1.X, value2.X, value3.X, amount1, amount2);
-			result.Y = MathHelper.Barycentric (value1.X, value2.X, value3.X, amount1, amount2);
+			result.x = MathHelper.Barycentric (value1.x, value2.x, value3.x, amount1, amount2);
+			result.y = MathHelper.Barycentric (value1.y, value2.y, value3.y, amount1, amount2);
 		}
 		
 		public static Vector2 Clamp (Vector2 value1, Vector2 min, Vector2 max)
@@ -365,13 +368,13 @@ namespace Mono.GameMath
 		{
 /*#if SIMD
 			var v4 = VectorOperations.Min (VectorOperations.Max (
-				new Vector4f (value1.X, value1.Y, 0f, 0f),
+				new Vector4f (value1.x, value1.y, 0f, 0f),
 				new Vector4f (min.X, min.Y, 0f, 0f)),
 				new Vector4f (max.X, max.Y, 0f, 0f));
 			result = new Vector2 (v4.X, v4.Y);
 #else*/
-			result.X = MathHelper.Clamp (value1.X, min.X, max.X);
-			result.Y = MathHelper.Clamp (value1.Y, min.Y, max.Y);
+			result.x = MathHelper.Clamp (value1.x, min.x, max.x);
+			result.y = MathHelper.Clamp (value1.y, min.y, max.y);
 //#endif
 		}
 		
@@ -385,7 +388,7 @@ namespace Mono.GameMath
 		public static void Distance (ref Vector2 value1, ref Vector2 value2, out float result)
 		{
 #if SIMD
-			Vector4f r0 = new Vector4f (value2.X - value1.X, value2.Y - value1.Y, 0f, 0f);
+			Vector4f r0 = new Vector4f (value2.x - value1.x, value2.y - value1.y, 0f, 0f);
 			r0 = r0 * r0;
 			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
@@ -419,7 +422,7 @@ namespace Mono.GameMath
 		
 		public static void Dot (ref Vector2 value1, ref Vector2 value2, out float result)
 		{
-			result = value1.X * value2.X + value1.Y * value2.Y;
+			result = value1.x * value2.x + value1.y * value2.y;
 		}
 		
 		public float Length ()
@@ -429,7 +432,7 @@ namespace Mono.GameMath
 		
 		public float LengthSquared ()
 		{
-			return X * X + Y * Y;
+			return x * x + y * y;
 		}
 		
 		public static Vector2 Max (Vector2 value1, Vector2 value2)
@@ -440,8 +443,8 @@ namespace Mono.GameMath
 		
 		public static void Max (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = System.Math.Max (value1.X, value2.X);
-			result.Y = System.Math.Max (value1.X, value2.X);
+			result.x = System.Math.Max (value1.x, value2.x);
+			result.y = System.Math.Max (value1.x, value2.x);
 		}
 		
 		public static Vector2 Min (Vector2 value1, Vector2 value2)
@@ -452,8 +455,8 @@ namespace Mono.GameMath
 		
 		public static void Min (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
-			result.X = System.Math.Min (value1.X, value2.X);
-			result.Y = System.Math.Min (value1.X, value2.X);
+			result.x = System.Math.Min (value1.x, value2.x);
+			result.y = System.Math.Min (value1.x, value2.x);
 		}
 		
 		public void Normalize ()
@@ -470,17 +473,17 @@ namespace Mono.GameMath
 		public static void Normalize (ref Vector2 value, out Vector2 result)
 		{
 /*#if SIMD
-			Vector4f v4 = new Vector4f (value.X, value.Y, 0f, 0f);
+			Vector4f v4 = new Vector4f (value.x, value.y, 0f, 0f);
 			Vector4f r0 = v4 * v4;
 			r0 = r0 + r0.Shuffle (ShuffleSel.Swap);
 			r0 = r0 + r0.Shuffle (ShuffleSel.RotateLeft);
 			v4 = v4 / r0.Sqrt ();
-			result.X = v4.X;
-			result.Y = v4.Y;
+			result.x = v4.X;
+			result.y = v4.Y;
 #else*/
 			var l = value.Length ();
-			result.X = value.X / l;
-			result.Y = value.Y / l;
+			result.x = value.x / l;
+			result.y = value.y / l;
 //#endif
 		}
 		
@@ -496,12 +499,12 @@ namespace Mono.GameMath
 			//assuming normal is normalized, r = -v + 2 * n * (n . v)
 			//http://mathworld.wolfram.com/Reflection.html
 			//calculate the common part once
-			float d2 = (float) System.Math.Sqrt (normal.X * vector.X + normal.Y * vector.Y);
+			float d2 = (float) System.Math.Sqrt (normal.x * vector.x + normal.y * vector.y);
 			// add is much faster than multiply by 2
 			d2 = d2 + d2;
 			//subtract faster than negate and add
-			result.X = d2 * normal.X - vector.X;
-			result.Y = d2 * normal.Y - vector.Y;
+			result.x = d2 * normal.x - vector.x;
+			result.y = d2 * normal.y - vector.y;
 		}
 		
 		#endregion
@@ -631,7 +634,7 @@ namespace Mono.GameMath
 		
 		public bool Equals (Vector2 other)
 		{
-			return X == other.X && Y == other.Y;
+			return x == other.x && y == other.y;
 		}
 		
 		public override bool Equals (object obj)
@@ -641,17 +644,17 @@ namespace Mono.GameMath
 		
 		public override int GetHashCode ()
 		{
-			return X.GetHashCode () ^ Y.GetHashCode ();
+			return x.GetHashCode () ^ y.GetHashCode ();
 		}
 		
 		public static bool operator == (Vector2 a, Vector2 b)
 		{
-			return a.X == b.X && a.Y == b.Y;
+			return a.x == b.x && a.y == b.y;
 		}
 		
 		public static bool operator != (Vector2 a, Vector2 b)
 		{
-			return a.X != b.X || a.Y != b.Y;
+			return a.x != b.x || a.y != b.y;
 		}
 		
 		# endregion

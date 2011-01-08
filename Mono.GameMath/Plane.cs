@@ -37,9 +37,7 @@ namespace Mono.GameMath
 		
 		public Plane (float a, float b, float c, float d)
 		{
-			Normal.X = a;
-			Normal.Y = b;
-			Normal.Z = c;
+			Normal = new Vector3 (a, b, c);
 			D = d;
 		}
 		

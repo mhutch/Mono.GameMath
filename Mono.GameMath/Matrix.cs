@@ -35,7 +35,7 @@ namespace Mono.GameMath
 	public struct Matrix : IEquatable<Matrix>
 	{
 #if SIMD
-		Vector4f r1, r2, r3, r4;
+		internal Vector4f r1, r2, r3, r4;
 		
 		public float M11 { get { return r1.X; } set { r1.X = value; } }
 		public float M12 { get { return r1.Y; } set { r1.Y = value; } }
@@ -70,10 +70,11 @@ namespace Mono.GameMath
 			r4 = new Vector4f (v);
 		}
 #else
-		float m11, m12, m13, m14;
-		float m21, m22, m23, m24;
-		float m31, m32, m33, m34;
-		float m41, m42, m43, m44;
+		float
+			m11, m12, m13, m14,
+			m21, m22, m23, m24,
+			m31, m32, m33, m34,
+			m41, m42, m43, m44;
 		
 		public float M11 { get { return m11; } set { m11 = value; } }
 		public float M12 { get { return m12; } set { m12 = value; } }
@@ -159,34 +160,64 @@ namespace Mono.GameMath
 		
 		public Vector3 Left {
 			get {
-				return new Vector3 (-M21, -M22, -M23);
+#if SIMD
+				return new Vector3 (r1 ^ new Vector4f (-0.0f));
+#else
+				return new Vector3 (-m11, -m12, -m13);
+#endif
 			}
 			set {
-				M21 = -value.X;
-				M22 = -value.Y;
-				M23 = -value.Z;
+#if SIMD
+				var minus = value.v4 ^ new Vector4f (-0.0f);
+				minus.W = M14;
+				r1 = minus;
+#else
+				m11 = -value.X;
+				m12 = -value.Y;
+				m13 = -value.Z;
+#endif
 			}
 		}
 		
 		public Vector3 Down {
 			get {
-				return new Vector3 (-M21, -M22, -M23);
+#if SIMD
+				return new Vector3 (r2 ^ new Vector4f (-0.0f));
+#else
+				return new Vector3 (-m21, -m22, -m23);
+#endif
 			}
 			set {
-				M21 = -value.X;
-				M22 = -value.Y;
-				M23 = -value.Z;
+#if SIMD
+				var minus = value.v4 ^ new Vector4f (-0.0f);
+				minus.W = M24;
+				r2 = minus;
+#else
+				m21 = -value.X;
+				m22 = -value.Y;
+				m23 = -value.Z;
+#endif
 			}
 		}
 		
 		public Vector3 Forward {
 			get {
-				return new Vector3 (-M31, -M32, -M33);
+#if SIMD
+				return new Vector3 (r3 ^ new Vector4f (-0.0f));
+#else
+				return new Vector3 (-m31, -m32, -m33);
+#endif
 			}
 			set {
-				M31 = -value.X;
-				M32 = -value.Y;
-				M33 = -value.Z;
+#if SIMD
+				var minus = value.v4 ^ new Vector4f (-0.0f);
+				minus.W = M34;
+				r3 = minus;
+#else
+				m31 = -value.X;
+				m32 = -value.Y;
+				m33 = -value.Z;
+#endif
 			}
 		}
 		
@@ -516,25 +547,25 @@ namespace Mono.GameMath
 			result.r3 = matrix1.r3 + matrix2.r3;
 			result.r4 = matrix1.r4 + matrix2.r4;
 #else
-			result.M11 = matrix1.M11 + matrix2.M11;
-			result.M12 = matrix1.M12 + matrix2.M12;
-			result.M13 = matrix1.M13 + matrix2.M13;
-			result.M14 = matrix1.M14 + matrix2.M14;
+			result.m11 = matrix1.m11 + matrix2.m11;
+			result.m12 = matrix1.m12 + matrix2.m12;
+			result.m13 = matrix1.m13 + matrix2.m13;
+			result.m14 = matrix1.m14 + matrix2.m14;
 			
-			result.M21 = matrix1.M21 + matrix2.M21;
-			result.M22 = matrix1.M22 + matrix2.M22;
-			result.M23 = matrix1.M23 + matrix2.M23;
-			result.M24 = matrix1.M24 + matrix2.M24;
+			result.m21 = matrix1.m21 + matrix2.m21;
+			result.m22 = matrix1.m22 + matrix2.m22;
+			result.m23 = matrix1.m23 + matrix2.m23;
+			result.m24 = matrix1.m24 + matrix2.m24;
 			
-			result.M31 = matrix1.M31 + matrix2.M31;
-			result.M32 = matrix1.M32 + matrix2.M32;
-			result.M33 = matrix1.M33 + matrix2.M33;
-			result.M34 = matrix1.M34 + matrix2.M34;
+			result.m31 = matrix1.m31 + matrix2.m31;
+			result.m32 = matrix1.m32 + matrix2.m32;
+			result.m33 = matrix1.m33 + matrix2.m33;
+			result.m34 = matrix1.m34 + matrix2.m34;
 			
-			result.M41 = matrix1.M41 + matrix2.M41;
-			result.M42 = matrix1.M42 + matrix2.M42;
-			result.M43 = matrix1.M43 + matrix2.M43;
-			result.M44 = matrix1.M44 + matrix2.M44;
+			result.m41 = matrix1.m41 + matrix2.m41;
+			result.m42 = matrix1.m42 + matrix2.m42;
+			result.m43 = matrix1.m43 + matrix2.m43;
+			result.m44 = matrix1.m44 + matrix2.m44;
 #endif
 		}
 		
@@ -585,25 +616,25 @@ namespace Mono.GameMath
 			result.r3 = c3;
 			result.r4 = c4;
 #else
-			result.M11 = matrix1.M11*matrix2.M11 + matrix1.M12*matrix2.M21 + matrix1.M13*matrix2.M31 + matrix1.M14*matrix2.M41;
-			result.M12 = matrix1.M11*matrix2.M12 + matrix1.M12*matrix2.M22 + matrix1.M13*matrix2.M32 + matrix1.M14*matrix2.M42;
-			result.M13 = matrix1.M11*matrix2.M13 + matrix1.M12*matrix2.M23 + matrix1.M13*matrix2.M33 + matrix1.M14*matrix2.M43;
-			result.M14 = matrix1.M11*matrix2.M14 + matrix1.M12*matrix2.M24 + matrix1.M13*matrix2.M34 + matrix1.M14*matrix2.M44;
+			result.m11 = matrix1.m11*matrix2.m11 + matrix1.m12*matrix2.m21 + matrix1.m13*matrix2.m31 + matrix1.m14*matrix2.m41;
+			result.m12 = matrix1.m11*matrix2.m12 + matrix1.m12*matrix2.m22 + matrix1.m13*matrix2.m32 + matrix1.m14*matrix2.m42;
+			result.m13 = matrix1.m11*matrix2.m13 + matrix1.m12*matrix2.m23 + matrix1.m13*matrix2.m33 + matrix1.m14*matrix2.m43;
+			result.m14 = matrix1.m11*matrix2.m14 + matrix1.m12*matrix2.m24 + matrix1.m13*matrix2.m34 + matrix1.m14*matrix2.m44;
 				
-			result.M21 = matrix1.M21*matrix2.M11 + matrix1.M22*matrix2.M21 + matrix1.M23*matrix2.M31 + matrix1.M24*matrix2.M41;
-			result.M22 = matrix1.M21*matrix2.M12 + matrix1.M22*matrix2.M22 + matrix1.M23*matrix2.M32 + matrix1.M24*matrix2.M42;
-			result.M23 = matrix1.M21*matrix2.M13 + matrix1.M22*matrix2.M23 + matrix1.M23*matrix2.M33 + matrix1.M24*matrix2.M43;
-			result.M24 = matrix1.M21*matrix2.M14 + matrix1.M22*matrix2.M24 + matrix1.M23*matrix2.M34 + matrix1.M24*matrix2.M44;
+			result.m21 = matrix1.m21*matrix2.m11 + matrix1.m22*matrix2.m21 + matrix1.m23*matrix2.m31 + matrix1.m24*matrix2.m41;
+			result.m22 = matrix1.m21*matrix2.m12 + matrix1.m22*matrix2.m22 + matrix1.m23*matrix2.m32 + matrix1.m24*matrix2.m42;
+			result.m23 = matrix1.m21*matrix2.m13 + matrix1.m22*matrix2.m23 + matrix1.m23*matrix2.m33 + matrix1.m24*matrix2.m43;
+			result.m24 = matrix1.m21*matrix2.m14 + matrix1.m22*matrix2.m24 + matrix1.m23*matrix2.m34 + matrix1.m24*matrix2.m44;
 			
-			result.M31 = matrix1.M31*matrix2.M11 + matrix1.M32*matrix2.M21 + matrix1.M33*matrix2.M31 + matrix1.M34*matrix2.M41;
-			result.M32 = matrix1.M31*matrix2.M12 + matrix1.M32*matrix2.M22 + matrix1.M33*matrix2.M32 + matrix1.M34*matrix2.M42;
-			result.M33 = matrix1.M31*matrix2.M13 + matrix1.M32*matrix2.M23 + matrix1.M33*matrix2.M33 + matrix1.M34*matrix2.M43;
-			result.M34 = matrix1.M31*matrix2.M14 + matrix1.M32*matrix2.M24 + matrix1.M33*matrix2.M34 + matrix1.M34*matrix2.M44;
+			result.m31 = matrix1.m31*matrix2.m11 + matrix1.m32*matrix2.m21 + matrix1.m33*matrix2.m31 + matrix1.m34*matrix2.m41;
+			result.m32 = matrix1.m31*matrix2.m12 + matrix1.m32*matrix2.m22 + matrix1.m33*matrix2.m32 + matrix1.m34*matrix2.m42;
+			result.m33 = matrix1.m31*matrix2.m13 + matrix1.m32*matrix2.m23 + matrix1.m33*matrix2.m33 + matrix1.m34*matrix2.m43;
+			result.m34 = matrix1.m31*matrix2.m14 + matrix1.m32*matrix2.m24 + matrix1.m33*matrix2.m34 + matrix1.m34*matrix2.m44;
 			
-			result.M41 = matrix1.M41*matrix2.M11 + matrix1.M42*matrix2.M21 + matrix1.M43*matrix2.M31 + matrix1.M44*matrix2.M41;
-			result.M42 = matrix1.M41*matrix2.M12 + matrix1.M42*matrix2.M22 + matrix1.M43*matrix2.M32 + matrix1.M44*matrix2.M42;
-			result.M43 = matrix1.M41*matrix2.M13 + matrix1.M42*matrix2.M23 + matrix1.M43*matrix2.M33 + matrix1.M44*matrix2.M43;
-			result.M44 = matrix1.M41*matrix2.M14 + matrix1.M42*matrix2.M24 + matrix1.M43*matrix2.M34 + matrix1.M44*matrix2.M44;
+			result.m41 = matrix1.m41*matrix2.m11 + matrix1.m42*matrix2.m21 + matrix1.m43*matrix2.m31 + matrix1.m44*matrix2.m41;
+			result.m42 = matrix1.m41*matrix2.m12 + matrix1.m42*matrix2.m22 + matrix1.m43*matrix2.m32 + matrix1.m44*matrix2.m42;
+			result.m43 = matrix1.m41*matrix2.m13 + matrix1.m42*matrix2.m23 + matrix1.m43*matrix2.m33 + matrix1.m44*matrix2.m43;
+			result.m44 = matrix1.m41*matrix2.m14 + matrix1.m42*matrix2.m24 + matrix1.m43*matrix2.m34 + matrix1.m44*matrix2.m44;
 #endif
 		}
 		
@@ -622,25 +653,25 @@ namespace Mono.GameMath
 			result.r3 = matrix1.r3 * scale;
 			result.r4 = matrix1.r4 * scale;
 #else
-			result.M11 = matrix1.M11 * scaleFactor;
-			result.M12 = matrix1.M12 * scaleFactor;
-			result.M13 = matrix1.M13 * scaleFactor;
-			result.M14 = matrix1.M14 * scaleFactor;
+			result.m11 = matrix1.m11 * scaleFactor;
+			result.m12 = matrix1.m12 * scaleFactor;
+			result.m13 = matrix1.m13 * scaleFactor;
+			result.m14 = matrix1.m14 * scaleFactor;
 			
-			result.M21 = matrix1.M21 * scaleFactor;
-			result.M22 = matrix1.M22 * scaleFactor;
-			result.M23 = matrix1.M23 * scaleFactor;
-			result.M24 = matrix1.M24 * scaleFactor;
+			result.m21 = matrix1.m21 * scaleFactor;
+			result.m22 = matrix1.m22 * scaleFactor;
+			result.m23 = matrix1.m23 * scaleFactor;
+			result.m24 = matrix1.m24 * scaleFactor;
 			
-			result.M31 = matrix1.M31 * scaleFactor;
-			result.M32 = matrix1.M32 * scaleFactor;
-			result.M33 = matrix1.M33 * scaleFactor;
-			result.M34 = matrix1.M34 * scaleFactor;
+			result.m31 = matrix1.m31 * scaleFactor;
+			result.m32 = matrix1.m32 * scaleFactor;
+			result.m33 = matrix1.m33 * scaleFactor;
+			result.m34 = matrix1.m34 * scaleFactor;
 			
-			result.M41 = matrix1.M41 * scaleFactor;
-			result.M42 = matrix1.M42 * scaleFactor;
-			result.M43 = matrix1.M43 * scaleFactor;
-			result.M44 = matrix1.M44 * scaleFactor;
+			result.m41 = matrix1.m41 * scaleFactor;
+			result.m42 = matrix1.m42 * scaleFactor;
+			result.m43 = matrix1.m43 * scaleFactor;
+			result.m44 = matrix1.m44 * scaleFactor;
 #endif
 		}
 		
@@ -659,25 +690,25 @@ namespace Mono.GameMath
 			result.r3 = matrix.r3 ^ sign;
 			result.r4 = matrix.r4 ^ sign;
 #else
-			result.M11 = -matrix.M11;
-			result.M12 = -matrix.M12;
-			result.M13 = -matrix.M13;
-			result.M14 = -matrix.M14;
+			result.m11 = -matrix.m11;
+			result.m12 = -matrix.m12;
+			result.m13 = -matrix.m13;
+			result.m14 = -matrix.m14;
 			
-			result.M21 = -matrix.M21;
-			result.M22 = -matrix.M22;
-			result.M23 = -matrix.M23;
-			result.M24 = -matrix.M24;
+			result.m21 = -matrix.m21;
+			result.m22 = -matrix.m22;
+			result.m23 = -matrix.m23;
+			result.m24 = -matrix.m24;
 			
-			result.M31 = -matrix.M31;
-			result.M32 = -matrix.M32;
-			result.M33 = -matrix.M33;
-			result.M34 = -matrix.M34;
+			result.m31 = -matrix.m31;
+			result.m32 = -matrix.m32;
+			result.m33 = -matrix.m33;
+			result.m34 = -matrix.m34;
 			
-			result.M41 = -matrix.M41;
-			result.M42 = -matrix.M42;
-			result.M43 = -matrix.M43;
-			result.M44 = -matrix.M44;
+			result.m41 = -matrix.m41;
+			result.m42 = -matrix.m42;
+			result.m43 = -matrix.m43;
+			result.m44 = -matrix.m44;
 #endif
 		}
 		
@@ -695,25 +726,25 @@ namespace Mono.GameMath
 			result.r3 = matrix1.r3 - matrix2.r3;
 			result.r4 = matrix1.r4 - matrix2.r4;
 #else
-			result.M11 = matrix1.M11 - matrix2.M11;
-			result.M12 = matrix1.M12 - matrix2.M12;
-			result.M13 = matrix1.M13 - matrix2.M13;
-			result.M14 = matrix1.M14 - matrix2.M14;
+			result.m11 = matrix1.m11 - matrix2.m11;
+			result.m12 = matrix1.m12 - matrix2.m12;
+			result.m13 = matrix1.m13 - matrix2.m13;
+			result.m14 = matrix1.m14 - matrix2.m14;
 			
-			result.M21 = matrix1.M21 - matrix2.M21;
-			result.M22 = matrix1.M22 - matrix2.M22;
-			result.M23 = matrix1.M23 - matrix2.M23;
-			result.M24 = matrix1.M24 - matrix2.M24;
+			result.m21 = matrix1.m21 - matrix2.m21;
+			result.m22 = matrix1.m22 - matrix2.m22;
+			result.m23 = matrix1.m23 - matrix2.m23;
+			result.m24 = matrix1.m24 - matrix2.m24;
 			
-			result.M31 = matrix1.M31 - matrix2.M31;
-			result.M32 = matrix1.M32 - matrix2.M32;
-			result.M33 = matrix1.M33 - matrix2.M33;
-			result.M34 = matrix1.M34 - matrix2.M34;
+			result.m31 = matrix1.m31 - matrix2.m31;
+			result.m32 = matrix1.m32 - matrix2.m32;
+			result.m33 = matrix1.m33 - matrix2.m33;
+			result.m34 = matrix1.m34 - matrix2.m34;
 			
-			result.M41 = matrix1.M41 - matrix2.M41;
-			result.M42 = matrix1.M42 - matrix2.M42;
-			result.M43 = matrix1.M43 - matrix2.M43;
-			result.M44 = matrix1.M44 - matrix2.M44;
+			result.m41 = matrix1.m41 - matrix2.m41;
+			result.m42 = matrix1.m42 - matrix2.m42;
+			result.m43 = matrix1.m43 - matrix2.m43;
+			result.m44 = matrix1.m44 - matrix2.m44;
 #endif
 		}
 		
@@ -731,25 +762,25 @@ namespace Mono.GameMath
 			result.r3 = matrix1.r3 * matrix2.r3;
 			result.r4 = matrix1.r4 * matrix2.r4;
 #else
-			result.M11 = matrix1.M11 / matrix2.M11;
-			result.M12 = matrix1.M12 / matrix2.M12;
-			result.M13 = matrix1.M13 / matrix2.M13;
-			result.M14 = matrix1.M14 / matrix2.M14;
+			result.m11 = matrix1.m11 / matrix2.m11;
+			result.m12 = matrix1.m12 / matrix2.m12;
+			result.m13 = matrix1.m13 / matrix2.m13;
+			result.m14 = matrix1.m14 / matrix2.m14;
 			
-			result.M21 = matrix1.M21 / matrix2.M21;
-			result.M22 = matrix1.M22 / matrix2.M22;
-			result.M23 = matrix1.M23 / matrix2.M23;
-			result.M24 = matrix1.M24 / matrix2.M24;
+			result.m21 = matrix1.m21 / matrix2.m21;
+			result.m22 = matrix1.m22 / matrix2.m22;
+			result.m23 = matrix1.m23 / matrix2.m23;
+			result.m24 = matrix1.m24 / matrix2.m24;
 			
-			result.M31 = matrix1.M31 / matrix2.M31;
-			result.M32 = matrix1.M32 / matrix2.M32;
-			result.M33 = matrix1.M33 / matrix2.M33;
-			result.M34 = matrix1.M34 / matrix2.M34;
+			result.m31 = matrix1.m31 / matrix2.m31;
+			result.m32 = matrix1.m32 / matrix2.m32;
+			result.m33 = matrix1.m33 / matrix2.m33;
+			result.m34 = matrix1.m34 / matrix2.m34;
 			
-			result.M41 = matrix1.M41 / matrix2.M41;
-			result.M42 = matrix1.M42 / matrix2.M42;
-			result.M43 = matrix1.M43 / matrix2.M43;
-			result.M44 = matrix1.M44 / matrix2.M44;
+			result.m41 = matrix1.m41 / matrix2.m41;
+			result.m42 = matrix1.m42 / matrix2.m42;
+			result.m43 = matrix1.m43 / matrix2.m43;
+			result.m44 = matrix1.m44 / matrix2.m44;
 #endif
 		}
 		
@@ -768,25 +799,25 @@ namespace Mono.GameMath
 			result.r3 = matrix1.r3 / divisor;
 			result.r4 = matrix1.r4 / divisor;
 #else
-			result.M11 = matrix1.M11 / divider;
-			result.M12 = matrix1.M12 / divider;
-			result.M13 = matrix1.M13 / divider;
-			result.M14 = matrix1.M14 / divider;
+			result.m11 = matrix1.m11 / divider;
+			result.m12 = matrix1.m12 / divider;
+			result.m13 = matrix1.m13 / divider;
+			result.m14 = matrix1.m14 / divider;
 			
-			result.M21 = matrix1.M21 / divider;
-			result.M22 = matrix1.M22 / divider;
-			result.M23 = matrix1.M23 / divider;
-			result.M24 = matrix1.M24 / divider;
+			result.m21 = matrix1.m21 / divider;
+			result.m22 = matrix1.m22 / divider;
+			result.m23 = matrix1.m23 / divider;
+			result.m24 = matrix1.m24 / divider;
 			
-			result.M31 = matrix1.M31 / divider;
-			result.M32 = matrix1.M32 / divider;
-			result.M33 = matrix1.M33 / divider;
-			result.M34 = matrix1.M34 / divider;
+			result.m31 = matrix1.m31 / divider;
+			result.m32 = matrix1.m32 / divider;
+			result.m33 = matrix1.m33 / divider;
+			result.m34 = matrix1.m34 / divider;
 			
-			result.M41 = matrix1.M41 / divider;
-			result.M42 = matrix1.M42 / divider;
-			result.M43 = matrix1.M43 / divider;
-			result.M44 = matrix1.M44 / divider;
+			result.m41 = matrix1.m41 / divider;
+			result.m42 = matrix1.m42 / divider;
+			result.m43 = matrix1.m43 / divider;
+			result.m44 = matrix1.m44 / divider;
 #endif
 		}
 		
@@ -886,29 +917,29 @@ namespace Mono.GameMath
 		{
 #if SIMD
 			result.r1 = matrix1.r1 + amount * (matrix2.r1 - matrix1.r1);
-			result.r1 = matrix1.r2 + amount * (matrix2.r2 - matrix1.r2);
-			result.r1 = matrix1.r3 + amount * (matrix2.r3 - matrix1.r3);
-			result.r1 = matrix1.r4 + amount * (matrix2.r4 - matrix1.r4);
+			result.r2 = matrix1.r2 + amount * (matrix2.r2 - matrix1.r2);
+			result.r3 = matrix1.r3 + amount * (matrix2.r3 - matrix1.r3);
+			result.r4 = matrix1.r4 + amount * (matrix2.r4 - matrix1.r4);
 #else
-			result.M11 = matrix1.M11 + amount * (matrix2.M11 - matrix1.M11);
-			result.M12 = matrix1.M12 + amount * (matrix2.M12 - matrix1.M12);
-			result.M13 = matrix1.M13 + amount * (matrix2.M13 - matrix1.M13);
-			result.M14 = matrix1.M14 + amount * (matrix2.M14 - matrix1.M14);
+			result.m11 = matrix1.m11 + amount * (matrix2.m11 - matrix1.m11);
+			result.m12 = matrix1.m12 + amount * (matrix2.m12 - matrix1.m12);
+			result.m13 = matrix1.m13 + amount * (matrix2.m13 - matrix1.m13);
+			result.m14 = matrix1.m14 + amount * (matrix2.m14 - matrix1.m14);
 			
-			result.M21 = matrix1.M21 + amount * (matrix2.M21 - matrix1.M21);
-			result.M22 = matrix1.M22 + amount * (matrix2.M22 - matrix1.M22);
-			result.M23 = matrix1.M23 + amount * (matrix2.M23 - matrix1.M23);
-			result.M24 = matrix1.M24 + amount * (matrix2.M24 - matrix1.M24);
+			result.m21 = matrix1.m21 + amount * (matrix2.m21 - matrix1.m21);
+			result.m22 = matrix1.m22 + amount * (matrix2.m22 - matrix1.m22);
+			result.m23 = matrix1.m23 + amount * (matrix2.m23 - matrix1.m23);
+			result.m24 = matrix1.m24 + amount * (matrix2.m24 - matrix1.m24);
 			
-			result.M31 = matrix1.M31 + amount * (matrix2.M31 - matrix1.M31);
-			result.M32 = matrix1.M32 + amount * (matrix2.M32 - matrix1.M32);
-			result.M33 = matrix1.M33 + amount * (matrix2.M33 - matrix1.M33);
-			result.M34 = matrix1.M34 + amount * (matrix2.M34 - matrix1.M34);
+			result.m31 = matrix1.m31 + amount * (matrix2.m31 - matrix1.m31);
+			result.m32 = matrix1.m32 + amount * (matrix2.m32 - matrix1.m32);
+			result.m33 = matrix1.m33 + amount * (matrix2.m33 - matrix1.m33);
+			result.m34 = matrix1.m34 + amount * (matrix2.m34 - matrix1.m34);
 			
-			result.M41 = matrix1.M41 + amount * (matrix2.M41 - matrix1.M41);
-			result.M42 = matrix1.M42 + amount * (matrix2.M42 - matrix1.M42);
-			result.M43 = matrix1.M43 + amount * (matrix2.M43 - matrix1.M43);
-			result.M44 = matrix1.M44 + amount * (matrix2.M44 - matrix1.M44);
+			result.m41 = matrix1.m41 + amount * (matrix2.m41 - matrix1.m41);
+			result.m42 = matrix1.m42 + amount * (matrix2.m42 - matrix1.m42);
+			result.m43 = matrix1.m43 + amount * (matrix2.m43 - matrix1.m43);
+			result.m44 = matrix1.m44 + amount * (matrix2.m44 - matrix1.m44);
 #endif
 		}
 		
@@ -981,25 +1012,25 @@ namespace Mono.GameMath
 			result.r3 = xmm1;
 			result.r4 = xmm4;
 #else
-			result.M11 = matrix.M11;
-			result.M12 = matrix.M21;
-			result.M13 = matrix.M31;
-			result.M14 = matrix.M41;
+			result.m11 = matrix.m11;
+			result.m12 = matrix.m21;
+			result.m13 = matrix.m31;
+			result.m14 = matrix.m41;
 			
-			result.M21 = matrix.M12;
-			result.M22 = matrix.M22;
-			result.M23 = matrix.M32;
-			result.M24 = matrix.M42;
+			result.m21 = matrix.m12;
+			result.m22 = matrix.m22;
+			result.m23 = matrix.m32;
+			result.m24 = matrix.m42;
 			
-			result.M31 = matrix.M13;
-			result.M32 = matrix.M23;
-			result.M33 = matrix.M33;
-			result.M34 = matrix.M43;
+			result.m31 = matrix.m13;
+			result.m32 = matrix.m23;
+			result.m33 = matrix.m33;
+			result.m34 = matrix.m43;
 			
-			result.M41 = matrix.M14;
-			result.M42 = matrix.M24;
-			result.M43 = matrix.M34;
-			result.M44 = matrix.M44;
+			result.m41 = matrix.m14;
+			result.m42 = matrix.m24;
+			result.m43 = matrix.m34;
+			result.m44 = matrix.m44;
 #endif
 		}
 		
@@ -1013,10 +1044,10 @@ namespace Mono.GameMath
 			return r1 == other.r1 && r2 == other.r2 && r3 == other.r3 && r4 == other.r4; 
 #else
 			return
-				M11 == other.M11 && M12 == other.M12 && M13 == other.M13 && M14 == other.M14 &&
-				M21 == other.M21 && M22 == other.M22 && M23 == other.M23 && M24 == other.M24 &&
-				M31 == other.M31 && M32 == other.M32 && M33 == other.M33 && M34 == other.M34 &&
-				M41 == other.M41 && M42 == other.M42 && M43 == other.M43 && M44 == other.M44;
+				m11 == other.m11 && m12 == other.m12 && m13 == other.m13 && m14 == other.m14 &&
+				m21 == other.m21 && m22 == other.m22 && m23 == other.m23 && m24 == other.m24 &&
+				m31 == other.m31 && m32 == other.m32 && m33 == other.m33 && m34 == other.m34 &&
+				m41 == other.m41 && m42 == other.m42 && m43 == other.m43 && m44 == other.m44;
 #endif
 		}
 		
@@ -1049,35 +1080,35 @@ namespace Mono.GameMath
 			}
 #elif UNSAFE
 			unsafe {
-				float f = M11;
+				float f = m11;
 				int acc = *((int*)&f);
-				f = M12; acc ^= *((int*)&f);
-				f = M13; acc ^= *((int*)&f);
-				f = M14; acc ^= *((int*)&f);
+				f = m12; acc ^= *((int*)&f);
+				f = m13; acc ^= *((int*)&f);
+				f = m14; acc ^= *((int*)&f);
 				
-				f = M21; acc ^= *((int*)&f);
-				f = M22; acc ^= *((int*)&f);
-				f = M23; acc ^= *((int*)&f);
-				f = M24; acc ^= *((int*)&f);
+				f = m21; acc ^= *((int*)&f);
+				f = m22; acc ^= *((int*)&f);
+				f = m23; acc ^= *((int*)&f);
+				f = m24; acc ^= *((int*)&f);
 				
-				f = M31; acc ^= *((int*)&f);
-				f = M32; acc ^= *((int*)&f);
-				f = M33; acc ^= *((int*)&f);
-				f = M34; acc ^= *((int*)&f);
+				f = m31; acc ^= *((int*)&f);
+				f = m32; acc ^= *((int*)&f);
+				f = m33; acc ^= *((int*)&f);
+				f = m34; acc ^= *((int*)&f);
 				
-				f = M41; acc ^= *((int*)&f);
-				f = M42; acc ^= *((int*)&f);
-				f = M43; acc ^= *((int*)&f);
-				f = M44; acc ^= *((int*)&f);
+				f = m41; acc ^= *((int*)&f);
+				f = m42; acc ^= *((int*)&f);
+				f = m43; acc ^= *((int*)&f);
+				f = m44; acc ^= *((int*)&f);
 				return acc;
 			}
 			
 #else
 			return
-				M11.GetHashCode () ^ M12.GetHashCode () ^ M13.GetHashCode () ^ M14.GetHashCode () ^
-				M21.GetHashCode () ^ M22.GetHashCode () ^ M23.GetHashCode () ^ M24.GetHashCode () ^
-				M31.GetHashCode () ^ M32.GetHashCode () ^ M33.GetHashCode () ^ M34.GetHashCode () ^
-				M41.GetHashCode () ^ M42.GetHashCode () ^ M43.GetHashCode () ^ M44.GetHashCode (); 
+				m11.GetHashCode () ^ m12.GetHashCode () ^ m13.GetHashCode () ^ m14.GetHashCode () ^
+				m21.GetHashCode () ^ m22.GetHashCode () ^ m23.GetHashCode () ^ m24.GetHashCode () ^
+				m31.GetHashCode () ^ m32.GetHashCode () ^ m33.GetHashCode () ^ m34.GetHashCode () ^
+				m41.GetHashCode () ^ m42.GetHashCode () ^ m43.GetHashCode () ^ m44.GetHashCode (); 
 #endif
 		}
 		
@@ -1087,10 +1118,10 @@ namespace Mono.GameMath
 			return a.r1 == b.r1 && a.r2 == b.r2 && a.r3 == b.r3 && a.r4 == b.r4; 
 #else
 			return
-				a.M11 == b.M11 && a.M12 == b.M12 && a.M13 == b.M13 && a.M14 == b.M14 &&
-				a.M21 == b.M21 && a.M22 == b.M22 && a.M23 == b.M23 && a.M24 == b.M24 &&
-				a.M31 == b.M31 && a.M32 == b.M32 && a.M33 == b.M33 && a.M34 == b.M34 &&
-				a.M41 == b.M41 && a.M42 == b.M42 && a.M43 == b.M43 && a.M44 == b.M44;
+				a.m11 == b.m11 && a.m12 == b.m12 && a.m13 == b.m13 && a.m14 == b.m14 &&
+				a.m21 == b.m21 && a.m22 == b.m22 && a.m23 == b.m23 && a.m24 == b.m24 &&
+				a.m31 == b.m31 && a.m32 == b.m32 && a.m33 == b.m33 && a.m34 == b.m34 &&
+				a.m41 == b.m41 && a.m42 == b.m42 && a.m43 == b.m43 && a.m44 == b.m44;
 #endif
 		}
 		
@@ -1100,10 +1131,10 @@ namespace Mono.GameMath
 			return a.r1 != b.r1 || a.r2 != b.r2 || a.r3 != b.r3 || a.r4 != b.r4; 
 #else
 			return
-				a.M11 != b.M11 || a.M12 != b.M12 || a.M13 != b.M13 && a.M14 != b.M14 ||
-				a.M21 != b.M21 || a.M22 != b.M22 || a.M23 != b.M23 && a.M24 != b.M24 ||
-				a.M31 != b.M31 || a.M32 != b.M32 || a.M33 != b.M33 && a.M34 != b.M34 ||
-				a.M41 != b.M41 || a.M42 != b.M42 || a.M43 != b.M43 && a.M44 != b.M44;
+				a.m11 != b.m11 || a.m12 != b.m12 || a.m13 != b.m13 && a.m14 != b.m14 ||
+				a.m21 != b.m21 || a.m22 != b.m22 || a.m23 != b.m23 && a.m24 != b.m24 ||
+				a.m31 != b.m31 || a.m32 != b.m32 || a.m33 != b.m33 && a.m34 != b.m34 ||
+				a.m41 != b.m41 || a.m42 != b.m42 || a.m43 != b.m43 && a.m44 != b.m44;
 #endif
 		}
 		

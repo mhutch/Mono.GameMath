@@ -55,8 +55,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Mono.Simd" />
+    <Reference Include="System.Core">
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
