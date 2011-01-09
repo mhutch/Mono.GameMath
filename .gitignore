@@ -3,3 +3,4 @@ obj
 .DS_Store
 *.pidb
 *.userprefs
+*.suo
