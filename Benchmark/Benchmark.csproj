@@ -34,11 +34,18 @@
       </EnvironmentVariables>
     </EnvironmentVariables>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Xna|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Xna</OutputPath>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
     </Reference>
     <Reference Include="System.Core">
     </Reference>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553" Condition="'$(Configuration)'=='Xna'" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

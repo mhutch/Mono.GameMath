@@ -10,6 +10,7 @@ Global
 		Safe|Any CPU = Safe|Any CPU
 		Unsafe|Any CPU = Unsafe|Any CPU
 		Simd|Any CPU = Simd|Any CPU
+		Xna|Any CPU = Xna|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
@@ -18,12 +19,15 @@ Global
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Simd|Any CPU.Build.0 = Simd|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Xna|Any CPU.ActiveCfg = Xna|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Xna|Any CPU.Build.0 = Xna|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.Build.0 = Safe|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.ActiveCfg = Simd|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.Build.0 = Simd|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
 		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Xna|Any CPU.ActiveCfg = Safe|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Benchmark\Benchmark.csproj
