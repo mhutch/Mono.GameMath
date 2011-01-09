@@ -10,12 +10,12 @@ simd:
 	xbuild /p:Configuration=Simd
 
 bench-safe:
-	mono Benchmark/bin/Debug/Benchmark.exe Safe
+	mono Benchmark/bin/Safe/Benchmark.exe
 
 bench-unsafe:
-	mono Benchmark/bin/Debug/Benchmark.exe Unsafe
+	mono Benchmark/bin/Unsafe/Benchmark.exe
 
 bench-simd:
-	mono Benchmark/bin/Debug/Benchmark.exe Simd
+	mono Benchmark/bin/Simd/Benchmark.exe
 
 .PHONY: safe unsafe simd bench-safe bench-unsafe bench-simd

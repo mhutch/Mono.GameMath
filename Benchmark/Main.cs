@@ -33,32 +33,16 @@ namespace Benchmark
 	{
 		public static int Main (string[] args)
 		{
-			var variant = "Simd";
-			if (args.Length > 0)
-				variant = args[0];
-			
-			var thisDir = Path.GetDirectoryName (typeof (Driver).Assembly.Location);
-			var rootDir = Path.GetDirectoryName (Path.GetDirectoryName (Path.GetDirectoryName (thisDir)));
-			var binDir = Path.Combine (Path.Combine (rootDir, "Mono.GameMath"), "bin");
-			var mathAssembly = Path.Combine (binDir, Path.Combine (variant, "Mono.GameMath.dll"));
-			try {
-				Assembly.LoadFile (mathAssembly);
-			} catch {
-				System.Console.Error.WriteLine ("Assembly variant '{0}' not found", variant);
-				return 1;
-			}
-			
 			string type = null;
 			string method = null;
-			if (args.Length > 1 && args[1] != "*")
-				type = args[1];
-			if (args.Length > 2)
-				method = args[2];
+			if (args.Length > 0 && args[0] != "*")
+				type = args[0];
+			if (args.Length > 1)
+				method = args[1];
 			
 			return RunTests (type, method);
 		}
 		
-		//this has to be a separate method so it gets JITed after we load the Mono.GameMath.dll assembly
 		static int RunTests (string type, string method)
 		{
 			Type[] testTypes;
