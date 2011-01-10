@@ -37,7 +37,7 @@ namespace Mono.GameMath
 		public BoundingSphere (Vector3 center, float radius)
 		{
 			if (radius < 0)
-				throw new ArgumentException ("Radius cannot be less that zero", "radius");
+				throw new ArgumentException ("Radius cannot be less than zero", "radius");
 			
 			this.Center = center;
 			this.Radius = radius;
