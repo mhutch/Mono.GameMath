@@ -118,7 +118,27 @@ namespace Mono.GameMath
 		
 		public static BoundingBox CreateFromPoints (IEnumerable<Vector3> points)
 		{
-			throw new NotImplementedException ();
+			if (points == null)
+				throw new ArgumentNullException ("points");
+			
+			bool hasPoints = false;
+			Vector3 min = new Vector3 (float.MaxValue);
+			Vector3 max = new Vector3 (float.MinValue);
+			
+			foreach (Vector3 point in points)
+			{
+				Vector3 pt = point;
+				
+				Vector3.Min (ref min, ref pt, out min);
+				Vector3.Max (ref max, ref pt, out max);
+				
+				hasPoints = true;
+			}
+			
+			if (!hasPoints)
+				throw new ArgumentException ("No points were given.", "points");
+			
+			return new BoundingBox (min, max);
 		}
 		
 		public static BoundingBox CreateFromSphere (BoundingSphere sphere)
