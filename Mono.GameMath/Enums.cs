@@ -27,6 +27,7 @@ using System;
 
 namespace Mono.GameMath
 {
+	[Serializable]
 	public enum ContainmentType
 	{
 		Contains,
@@ -34,6 +35,7 @@ namespace Mono.GameMath
 		Intersects
 	}
 	
+	[Serializable]
 	public enum PlaneIntersectionType
 	{
 		Back,
