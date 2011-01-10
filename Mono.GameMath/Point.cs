@@ -75,7 +75,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format("{{X:{0} Y:{1}}}", X, Y);
+			return string.Format ("{{X:{0} Y:{1}}}", X, Y);
 		}
 	}
 }

@@ -853,7 +853,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format("{{X:{0} Y:{1} Z:{2} W:{3}}}", X, Y, Z, W);
+			return string.Format ("{{X:{0} Y:{1} Z:{2} W:{3}}}", X, Y, Z, W);
 		}
 	}
 }

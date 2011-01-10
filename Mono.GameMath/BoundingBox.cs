@@ -220,7 +220,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format("{{Min:{0} Max:{1}}}", Min, Max);
+			return string.Format ("{{Min:{0} Max:{1}}}", Min, Max);
 		}
 	}
 }

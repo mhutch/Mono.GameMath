@@ -1142,7 +1142,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format(
+			return string.Format (
 				"{{" +
 				"{{M11:{0} M12:{1} M13:{2} M14:{3}}} " +
 				"{{M21:{4} M22:{5} M23:{6} M24:{7}}} " +

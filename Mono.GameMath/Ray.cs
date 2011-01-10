@@ -114,7 +114,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format("{{Position:{0} Direction:{1}}}", Position, Direction);
+			return string.Format ("{{Position:{0} Direction:{1}}}", Position, Direction);
 		}
 	}
 }

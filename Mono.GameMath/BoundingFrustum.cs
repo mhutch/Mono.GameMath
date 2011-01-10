@@ -224,8 +224,8 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			return string.Format("{{Near:{0} Far:{1} Left:{2} Right:{3} Top:{4} Bottom:{5}}}",
-			                     Near, Far, Left, Right, Top, Bottom);
+			return string.Format ("{{Near:{0} Far:{1} Left:{2} Right:{3} Top:{4} Bottom:{5}}}",
+				Near, Far, Left, Right, Top, Bottom);
 		}
 	}
 }
