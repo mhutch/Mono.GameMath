@@ -67,7 +67,7 @@ namespace Mono.GameMath
 			Vector3 vec = axis;
 			vec.Normalize ();
 			float ang = angle * 0.5f;
-			vec *= (float)Math.Sin (ang);
+			Vector3.Multiply (ref vec, (float) Math.Sin (ang), out vec);
 			
 			result = new Quaternion (vec, (float)Math.Cos (ang));
 		}
