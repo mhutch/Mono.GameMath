@@ -40,7 +40,35 @@ namespace Benchmark
 			if (args.Length > 1)
 				method = args[1];
 			
+			PrintInfo ();
+			
 			return RunTests (type, method);
+		}
+		
+		static void PrintInfo ()
+		{
+			var mtype = System.Type.GetType ("Mono.Runtime");
+			if (mtype != null) {
+				var monoVersion = (string) mtype.GetMethod ("GetDisplayName", 
+						System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+					.Invoke (null, null);
+				System.Console.WriteLine ("Runtime: Mono {0}", monoVersion);
+			} else {
+				System.Console.WriteLine ("Runtime: .NET");
+			}
+			System.Console.WriteLine ("CLR version: {0}",  System.Environment.Version.ToString ());
+			System.Console.WriteLine ("{0}-bit", IntPtr.Size * 8);
+			
+			System.Console.Write ("Math Assembly: ");
+#if XNA
+			var xnaName = typeof (Microsoft.Xna.Framework.Vector4).Assembly.GetName ();
+			System.Console.WriteLine ("{0} {1}", xnaName.Name, xnaName.Version);
+#else
+			var att =  (AssemblyDescriptionAttribute) typeof (Mono.GameMath.Vector4)
+				.Assembly.GetCustomAttributes (typeof (AssemblyDescriptionAttribute), false)[0];
+			System.Console.WriteLine (att.Description);
+#endif
+			System.Console.WriteLine ();
 		}
 		
 		static int RunTests (string type, string method)

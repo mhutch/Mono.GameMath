@@ -27,8 +27,17 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle ("Mono.GameMath")]
-[assembly: AssemblyDescription ("Math for games")]
 [assembly: AssemblyCompany ("Novell, Inc.")]
 [assembly: AssemblyCopyright ("Novell, Inc.")]
 
 [assembly: AssemblyVersion("0.1.0.0")]
+
+#if SIMD
+[assembly: AssemblyDescription ("Mono Math for Games (SIMD)")]
+#elif UNSAFE
+[assembly: AssemblyDescription ("Mono Math for Games (Unsafe)")]
+#elif SAFE
+[assembly: AssemblyDescription ("Mono Math for Games (Safe)")]
+#else
+[assembly: AssemblyDescription ("Mono Math for Games (Unknown)")]
+#endif

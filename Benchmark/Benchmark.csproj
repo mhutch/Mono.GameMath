@@ -13,19 +13,21 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Safe|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Safe</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DefineConstants>SAFE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unsafe|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Unsafe</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DefineConstants>UNSAFE</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Simd|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Simd</OutputPath>
     <WarningLevel>4</WarningLevel>
     <EnvironmentVariables>
@@ -33,12 +35,23 @@
         <Variable name="MONO_ENV_OPTIONS" value="-O=simd" />
       </EnvironmentVariables>
     </EnvironmentVariables>
+    <DefineConstants>SIMD</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Xna|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Xna</OutputPath>
     <WarningLevel>4</WarningLevel>
+    <DefineConstants>XNA</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'SafeX86|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\SafeX86</OutputPath>
+    <WarningLevel>4</WarningLevel>
+    <DefineConstants>SAFE</DefineConstants>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
@@ -56,7 +69,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Mono.GameMath\Mono.GameMath.csproj">
+    <ProjectReference Include="..\Mono.GameMath\Mono.GameMath.csproj" Condition="'$(Configuration)'!='Xna'">
       <Project>{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}</Project>
       <Name>Mono.GameMath</Name>
     </ProjectReference>

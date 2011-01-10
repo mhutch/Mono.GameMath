@@ -25,7 +25,12 @@
 // THE SOFTWARE.
 
 using System;
+
+#if XNA
+using Microsoft.Xna.Framework;
+#else
 using Mono.GameMath;
+#endif
 
 #pragma warning disable 0219
 
