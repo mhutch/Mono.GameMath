@@ -154,10 +154,10 @@ namespace Mono.GameMath
 		public void GetCorners (Vector3[] corners)
 		{
 			if (corners == null)
-				throw new ArgumentNullException("corners");
+				throw new ArgumentNullException ("corners");
 			
 			if (corners.Length != CornerCount)
-				throw new ArgumentOutOfRangeException("You must have at least 8 elements to copy corners.", "corners");
+				throw new ArgumentOutOfRangeException ("You must have at least 8 elements to copy corners.", "corners");
 			
 			corners[0] = new Vector3 (Min.X, Max.Y, Max.Z);
 			corners[1] = new Vector3 (Max.X, Max.Y, Max.Z);
@@ -180,7 +180,7 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out bool result)
 		{
-			result = (Contains(box) == ContainmentType.Intersects);
+			result = (Contains (box) == ContainmentType.Intersects);
 		}
 		
 		public bool Intersects (BoundingFrustum frustum)
