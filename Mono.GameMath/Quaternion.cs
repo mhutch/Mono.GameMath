@@ -64,7 +64,12 @@ namespace Mono.GameMath
 		
 		public static void CreateFromAxisAngle (ref Vector3 axis, float angle, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			Vector3 vec = axis;
+			vec.Normalize ();
+			float ang = angle * 0.5f;
+			vec *= (float)Math.Sin (ang);
+			
+			result = new Quaternion (vec, (float)Math.Cos (ang));
 		}
 		
 		public static Quaternion CreateFromRotationMatrix (Matrix matrix)
