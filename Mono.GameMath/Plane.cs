@@ -199,7 +199,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			throw new NotImplementedException ();
+			return string.Format("{{Normal:{0} D:{1}}}", Normal, D);
 		}
 	}
 }

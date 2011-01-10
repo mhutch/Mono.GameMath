@@ -226,7 +226,7 @@ namespace Mono.GameMath
 		
 		public override string ToString ()
 		{
-			throw new NotImplementedException ();
+			return string.Format("{{Center:{0} Radius:{1}}}", Center, Radius);
 		}
 	}
 }
