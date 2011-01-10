@@ -146,14 +146,27 @@ namespace Mono.GameMath
 		
 		public Vector3[] GetCorners ()
 		{
-			var arr = new Vector3[8];
+			var arr = new Vector3 [CornerCount];
 			GetCorners (arr);
 			return arr;
 		}
 		
 		public void GetCorners (Vector3[] corners)
 		{
-			throw new NotImplementedException ();
+			if (corners == null)
+				throw new ArgumentNullException("corners");
+			
+			if (corners.Length != CornerCount)
+				throw new ArgumentOutOfRangeException("You must have at least 8 elements to copy corners.", "corners");
+			
+			corners[0] = new Vector3 (Min.X, Max.Y, Max.Z);
+			corners[1] = new Vector3 (Max.X, Max.Y, Max.Z);
+			corners[2] = new Vector3 (Max.X, Min.Y, Max.Z);
+			corners[3] = new Vector3 (Min.X, Min.Y, Max.Z);
+			corners[4] = new Vector3 (Min.X, Max.Y, Min.Z);
+			corners[5] = new Vector3 (Max.X, Max.Y, Min.Z);
+			corners[6] = new Vector3 (Max.X, Min.Y, Min.Z);
+			corners[7] = new Vector3 (Min.X, Min.Y, Min.Z);
 		}
 		
 		#region Intersects
