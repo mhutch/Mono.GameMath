@@ -39,7 +39,7 @@ namespace Mono.GameMath
 		
 		public static float Barycentric (float value1, float value2, float value3, float amount1, float amount2)
 		{
-			throw new NotImplementedException ();
+			return value1 + (value2 - value1) * amount1 + (value3 - value1) * amount2;
 		}
 		
 		public static float CatmullRom (float value1, float value2, float value3, float value4, float amount)
