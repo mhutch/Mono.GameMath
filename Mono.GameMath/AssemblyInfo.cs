@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -30,7 +31,8 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCompany ("Novell, Inc.")]
 [assembly: AssemblyCopyright ("Novell, Inc.")]
 
-[assembly: AssemblyVersion("0.1.0.0")]
+[assembly: AssemblyVersion ("0.1.0.0")]
+[assembly: CLSCompliant (true)]
 
 #if SIMD
 [assembly: AssemblyDescription ("Mono Math for Games (SIMD)")]

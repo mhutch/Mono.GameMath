@@ -93,6 +93,7 @@ namespace Mono.GameMath
 		
 		#endregion
 		
+		[CLSCompliant (false)]
 		public uint PackedValue {
 			get { return packed; }
 			set { packed = value; }
