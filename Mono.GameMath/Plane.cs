@@ -54,7 +54,8 @@ namespace Mono.GameMath
 		
 		public Plane (Vector4 value)
 		{
-			throw new NotImplementedException ();
+			Normal = new Vector3 (value.X, value.Y, value.Z);
+			D = value.W;
 		}
 		
 		#endregion
