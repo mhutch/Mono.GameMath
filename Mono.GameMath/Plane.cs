@@ -68,7 +68,7 @@ namespace Mono.GameMath
 		
 		public void Dot (ref Vector4 value, out float result)
 		{
-			throw new NotImplementedException ();
+			result = (Normal.X * value.X) + (Normal.Y * value.Y) + (Normal.Z * value.Z) + (D * value.W);
 		}
 		
 		public float DotCoordinate (Vector3 value)
@@ -80,7 +80,7 @@ namespace Mono.GameMath
 		
 		public void DotCoordinate (ref Vector3 value, out float result)
 		{
-			throw new NotImplementedException ();
+			result = (Normal.X * value.X) + (Normal.Y * value.Y) + (Normal.Z * value.Z) + D;
 		}
 		
 		public float DotNormal (Vector3 value)
@@ -92,7 +92,7 @@ namespace Mono.GameMath
 		
 		public void DotNormal (ref Vector3 value, out float result)
 		{
-			throw new NotImplementedException ();
+			result = (Normal.X * value.X) + (Normal.Y * value.Y) + (Normal.Z * value.Z);
 		}
 		
 		#region Intersects
