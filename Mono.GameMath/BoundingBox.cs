@@ -150,7 +150,12 @@ namespace Mono.GameMath
 		
 		public static void CreateFromSphere (ref BoundingSphere sphere, out BoundingBox result)
 		{
-			throw new NotImplementedException ();
+			Vector3 min = new Vector3 (sphere.Center.X - sphere.Radius, sphere.Center.Y - sphere.Radius,
+				sphere.Center.Z - sphere.Radius);
+			Vector3 max = new Vector3 (sphere.Center.X + sphere.Radius, sphere.Center.Y + sphere.Radius,
+				sphere.Center.Z + sphere.Radius);
+			
+			result = new BoundingBox (min, max);
 		}
 		
 		public static BoundingBox CreateMerged (BoundingBox original, BoundingBox additional)
@@ -162,7 +167,12 @@ namespace Mono.GameMath
 		
 		public static void CreateMerged (ref BoundingBox original, ref BoundingBox additional, out BoundingBox result)
 		{
-			throw new NotImplementedException ();
+			Vector3 min, max;
+			
+			Vector3.Min (ref original.Min, ref additional.Min, out min);
+			Vector3.Max (ref original.Max, ref additional.Max, out max);
+			
+			result = new BoundingBox (min, max);
 		}
 		
 		#endregion
