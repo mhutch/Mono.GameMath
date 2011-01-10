@@ -53,7 +53,23 @@ namespace Mono.GameMath
 		
 		public void Contains (ref BoundingBox box, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			if ((Max.X < box.Min.X || Min.X > box.Max.X) ||
+			    (Max.Y < box.Min.Y || Min.Y > box.Max.Y) ||
+			    (Max.Z < box.Min.Z || Min.Z > box.Max.Z))
+			{
+				result = ContainmentType.Disjoint;
+				return;
+			}
+			
+			if ((Min.X <= box.Min.X && Max.X >= box.Max.X) &&
+			    (Min.Y <= box.Min.Y && Max.Y >= box.Max.Y) &&
+			    (Min.Z <= box.Min.Z && Max.Z >= box.Max.Z))
+			{
+				result = ContainmentType.Contains;
+				return;
+			}
+			
+			result = ContainmentType.Intersects;
 		}
 		
 		public ContainmentType Contains (BoundingFrustum frustrum)
@@ -82,7 +98,15 @@ namespace Mono.GameMath
 		
 		public void Contains (ref Vector3 point, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			if ((Min.X <= point.X && Max.X >= point.X) &&
+			    (Min.Y <= point.Y && Max.Y >= point.Y) &&
+			    (Min.Z <= point.Z && Max.Z >= point.Z))
+			{
+				result = ContainmentType.Contains;
+				return;
+			}
+			
+			result = ContainmentType.Disjoint;
 		}
 		
 		#endregion
