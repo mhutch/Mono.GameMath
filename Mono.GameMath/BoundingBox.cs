@@ -180,7 +180,7 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out bool result)
 		{
-			throw new NotImplementedException ();
+			result = (Contains(box) == ContainmentType.Intersects);
 		}
 		
 		public bool Intersects (BoundingFrustum frustum)
