@@ -72,8 +72,11 @@ namespace Mono.GameMath
 			result = ContainmentType.Intersects;
 		}
 		
-		public ContainmentType Contains (BoundingFrustum frustrum)
+		public ContainmentType Contains (BoundingFrustum frustum)
 		{
+			if (frustum == null)
+				throw new ArgumentNullException ("frustum");
+			
 			throw new NotImplementedException ();
 		}
 		

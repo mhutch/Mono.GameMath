@@ -126,7 +126,7 @@ namespace Mono.GameMath
 		
 		public Vector3[] GetCorners ()
 		{
-			var arr = new Vector3[8];
+			var arr = new Vector3[CornerCount];
 			GetCorners (arr);
 			return arr;
 		}
