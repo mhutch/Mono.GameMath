@@ -253,7 +253,8 @@ namespace Mono.GameMath
 		
 		public static void Dot (ref Quaternion quaternion1, ref Quaternion quaternion2, out float result)
 		{
-			throw new NotImplementedException ();
+			result = (quaternion1.X * quaternion2.X) + (quaternion1.Y * quaternion2.Y) +
+				(quaternion1.Z * quaternion2.Z) + (quaternion1.W * quaternion2.W);
 		}
 		
 		public static Quaternion Inverse (Quaternion quaternion)
@@ -265,7 +266,11 @@ namespace Mono.GameMath
 		
 		public static void Inverse (ref Quaternion quaternion, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			// http://www.ncsa.illinois.edu/~kindr/emtc/quaternions/quaternion.c++
+			Quaternion conj = quaternion;
+			conj.Conjugate ();
+			
+			result = conj * (1.0f / quaternion.LengthSquared ());
 		}
 		
 		public float Length ()
