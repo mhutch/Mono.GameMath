@@ -418,7 +418,26 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationX (float radians, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			float cos = (float) Math.Cos (radians);
+			float sin = (float) Math.Sin (radians);
+			
+			result = new Matrix ();
+			result.M11 = 1.0f;
+			result.M12 = 0.0f;
+			result.M13 = 0.0f;
+			result.M14 = 0.0f;
+			result.M21 = 0.0f;
+			result.M22 = cos;
+			result.M23 = sin;
+			result.M24 = 0.0f;
+			result.M31 = 0.0f;
+			result.M32 = -sin;
+			result.M33 = cos;
+			result.M34 = 0.0f;
+			result.M41 = 0.0f;
+			result.M42 = 0.0f;
+			result.M43 = 0.0f;
+			result.M44 = 1.0f;
 		}
 		
 		public static Matrix CreateRotationY (float radians)
@@ -430,7 +449,26 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationY (float radians, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			float cos = (float) Math.Cos (radians);
+			float sin = (float) Math.Sin (radians);
+			
+			result = new Matrix ();
+			result.M11 = cos;
+			result.M12 = 0.0f;
+			result.M13 = -sin;
+			result.M14 = 0.0f;
+			result.M21 = 0.0f;
+			result.M22 = 1.0f;
+			result.M23 = 0.0f;
+			result.M24 = 0.0f;
+			result.M31 = sin;
+			result.M32 = 0.0f;
+			result.M33 = cos;
+			result.M34 = 0.0f;
+			result.M41 = 0.0f;
+			result.M42 = 0.0f;
+			result.M43 = 0.0f;
+			result.M44 = 1.0f;
 		}
 		
 		public static Matrix CreateRotationZ (float radians)
@@ -442,7 +480,26 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationZ (float radians, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			float cos = (float) Math.Cos (radians);
+			float sin = (float) Math.Sin (radians);
+			
+			result = new Matrix ();
+			result.M11 = cos;
+			result.M12 = sin;
+			result.M13 = 0.0f;
+			result.M14 = 0.0f;
+			result.M21 = -sin;
+			result.M22 = cos;
+			result.M23 = 0.0f;
+			result.M24 = 0.0f;
+			result.M31 = 0.0f;
+			result.M32 = 0.0f;
+			result.M33 = 1.0f;
+			result.M34 = 0.0f;
+			result.M41 = 0.0f;
+			result.M42 = 0.0f;
+			result.M43 = 0.0f;
+			result.M44 = 1.0f;
 		}
 		
 		public static Matrix CreateScale (float scale)
