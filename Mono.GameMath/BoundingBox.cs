@@ -55,16 +55,14 @@ namespace Mono.GameMath
 		{
 			if ((Max.X < box.Min.X || Min.X > box.Max.X) ||
 			    (Max.Y < box.Min.Y || Min.Y > box.Max.Y) ||
-			    (Max.Z < box.Min.Z || Min.Z > box.Max.Z))
-			{
+			    (Max.Z < box.Min.Z || Min.Z > box.Max.Z)) {
 				result = ContainmentType.Disjoint;
 				return;
 			}
 			
 			if ((Min.X <= box.Min.X && Max.X >= box.Max.X) &&
 			    (Min.Y <= box.Min.Y && Max.Y >= box.Max.Y) &&
-			    (Min.Z <= box.Min.Z && Max.Z >= box.Max.Z))
-			{
+			    (Min.Z <= box.Min.Z && Max.Z >= box.Max.Z)) {
 				result = ContainmentType.Contains;
 				return;
 			}
@@ -99,16 +97,14 @@ namespace Mono.GameMath
 			
 			float radius = sphere.Radius;
 			
-			if (dist > radius)
-			{
+			if (dist > radius) {
 				result = ContainmentType.Disjoint;
 				return;
 			}
 			
 			if (Min.X + radius <= center.X && Max.X - radius >= center.X && Max.X - Min.X > radius &&
 			    Min.Y + radius <= center.Y && Max.Y - radius >= center.Y && Max.Y - Min.Y > radius &&
-			    Min.Z + radius <= center.Z && Max.Z - radius >= center.Z && Max.X - Min.X > radius)
-			{
+			    Min.Z + radius <= center.Z && Max.Z - radius >= center.Z && Max.X - Min.X > radius) {
 				result = ContainmentType.Contains;
 				return;
 			}
@@ -127,8 +123,7 @@ namespace Mono.GameMath
 		{
 			if ((Min.X <= point.X && Max.X >= point.X) &&
 			    (Min.Y <= point.Y && Max.Y >= point.Y) &&
-			    (Min.Z <= point.Z && Max.Z >= point.Z))
-			{
+			    (Min.Z <= point.Z && Max.Z >= point.Z)) {
 				result = ContainmentType.Contains;
 				return;
 			}
@@ -149,8 +144,7 @@ namespace Mono.GameMath
 			Vector3 min = new Vector3 (float.MaxValue);
 			Vector3 max = new Vector3 (float.MinValue);
 			
-			foreach (Vector3 point in points)
-			{
+			foreach (Vector3 point in points) {
 				Vector3 pt = point;
 				
 				Vector3.Min (ref min, ref pt, out min);

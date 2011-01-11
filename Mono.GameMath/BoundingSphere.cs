@@ -75,14 +75,12 @@ namespace Mono.GameMath
 			Vector3.Distance (ref Center, ref sphere.Center, out dist);
 			float sphereRadius = sphere.Radius;
 			
-			if (Radius + sphereRadius < dist)
-			{
+			if (Radius + sphereRadius < dist) {
 				result = ContainmentType.Disjoint;
 				return;
 			}
 			
-			if (Radius - sphereRadius < dist)
-			{
+			if (Radius - sphereRadius < dist) {
 				result = ContainmentType.Intersects;
 				return;
 			}
@@ -99,8 +97,7 @@ namespace Mono.GameMath
 		
 		public void Contains (ref Vector3 point, out ContainmentType result)
 		{
-			if (Vector3.DistanceSquared (point, Center) >= Radius * Radius)
-			{
+			if (Vector3.DistanceSquared (point, Center) >= Radius * Radius) {
 				result = ContainmentType.Disjoint;
 				return;
 			}
