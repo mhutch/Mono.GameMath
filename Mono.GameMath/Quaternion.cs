@@ -27,6 +27,7 @@ using System;
 
 namespace Mono.GameMath
 {
+	[Serializable]
 	public struct Quaternion
 	{
 		public float X, Y, Z, W;
