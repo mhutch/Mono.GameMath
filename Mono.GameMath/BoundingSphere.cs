@@ -71,7 +71,23 @@ namespace Mono.GameMath
 		
 		public void Contains (ref BoundingSphere sphere, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			float dist;
+			Vector3.Distance (ref Center, ref sphere.Center, out dist);
+			float sphereRadius = sphere.Radius;
+			
+			if (Radius + sphereRadius < dist)
+			{
+				result = ContainmentType.Disjoint;
+				return;
+			}
+			
+			if (Radius - sphereRadius < dist)
+			{
+				result = ContainmentType.Intersects;
+				return;
+			}
+			
+			result = ContainmentType.Contains;
 		}
 		
 		public ContainmentType Contains (Vector3 point)
@@ -84,9 +100,12 @@ namespace Mono.GameMath
 		public void Contains (ref Vector3 point, out ContainmentType result)
 		{
 			if (Vector3.DistanceSquared (point, Center) >= Radius * Radius)
-				return ContainmentType.Disjoint;
+			{
+				result = ContainmentType.Disjoint;
+				return;
+			}
 			
-			return ContainmentType.Contains;
+			result = ContainmentType.Contains;
 		}
 		
 		#endregion
