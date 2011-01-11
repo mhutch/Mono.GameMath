@@ -44,7 +44,26 @@ namespace Mono.GameMath
 		
 		public static float CatmullRom (float value1, float value2, float value3, float value4, float amount)
 		{
-			throw new NotImplementedException ();
+			// http://stephencarmody.wikispaces.com/Catmull-Rom+splines
+			
+			//value1 *= ((-amount + 2.0f) * amount - 1) * amount * 0.5f;
+			//value2 *= (((3.0f * amount - 5.0f) * amount) * amount + 2.0f) * 0.5f;
+			//value3 *= ((-3.0f * amount + 4.0f) * amount + 1.0f) * amount * 0.5f;
+			//value4 *= ((amount - 1.0f) * amount * amount) * 0.5f;
+			//
+			//return value1 + value2 + value3 + value4;
+			
+			// http://www.mvps.org/directx/articles/catmull/
+			
+			float amountSq = amount * amount;
+			float amountCube = amountSq * amount;
+			
+			// value1..4 = P0..3
+			// amount = t
+			return ((2.0f * value2 +
+				(-value1 + value3) * amount +
+				(2.0f * value1 - 5.0f * value2 + 4.0f * value3 - value4) * amountSq +
+				(3.0f * value2 - 3.0f * value3 - value1 + value4) * amountCube) * 0.5f);
 		}
 		
 		public static float Clamp (float value, float min, float max)
