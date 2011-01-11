@@ -83,7 +83,10 @@ namespace Mono.GameMath
 		
 		public void Contains (ref Vector3 point, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			if (Vector3.DistanceSquared (point, Center) >= Radius * Radius)
+				return ContainmentType.Disjoint;
+			
+			return ContainmentType.Contains;
 		}
 		
 		#endregion
@@ -137,12 +140,14 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out bool result)
 		{
-			throw new NotImplementedException ();
+			ContainmentType containment;
+			Contains (ref box, out containment);
+			result = containment == ContainmentType.Intersects;
 		}
 		
 		public bool Intersects (BoundingFrustum frustum)
 		{
-			throw new NotImplementedException ();
+			return (Contains (frustum) == ContainmentType.Intersects);
 		}
 		
 		public bool Intersects (BoundingSphere sphere)
@@ -154,7 +159,9 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingSphere sphere, out bool result)
 		{
-			throw new NotImplementedException ();
+			ContainmentType containment;
+			Contains (ref sphere, out containment);
+			result = containment == ContainmentType.Intersects;
 		}
 		
 		public PlaneIntersectionType Intersects (Plane plane)
