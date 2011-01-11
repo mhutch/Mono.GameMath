@@ -93,7 +93,29 @@ namespace Mono.GameMath
 		
 		public static void CreateFromYawPitchRoll (float yaw, float pitch, float roll, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			// http://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
+			// -> http://upload.wikimedia.org/math/8/f/2/8f24d7035f36dd398e6253a521d7ac0c.png
+			
+			yaw *= 0.5f;
+			pitch *= 0.5f;
+			roll *= 0.5f;
+			
+			float cosYaw = (float) Math.Cos (yaw);
+			float sinYaw = (float) Math.Sin (yaw);
+			float cosPitch = (float) Math.Cos (pitch);
+			float sinPitch = (float) Math.Sin (pitch);
+			float cosRoll = (float) Math.Cos (roll);
+			float sinRoll = (float) Math.Sin (roll);
+			
+			float cosPitchCosYaw = cosPitch * cosYaw;
+			float sinPitchSinYaw = sinPitch * sinYaw;
+			
+			float x = sinRoll * cosPitchCosYaw - cosRoll * sinPitchSinYaw;
+			float y = cosRoll * sinPitch * cosYaw + sinRoll * cosPitch * sinYaw;
+			float z = cosRoll * cosPitch * sinYaw - sinRoll * sinPitch * cosYaw;
+			float w = cosRoll * cosPitchCosYaw + sinRoll * sinPitchSinYaw;
+			
+			result = new Quaternion (x, y, z, w);
 		}
 		
 		#endregion
