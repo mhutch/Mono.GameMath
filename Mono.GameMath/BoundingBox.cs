@@ -89,7 +89,31 @@ namespace Mono.GameMath
 		
 		public void Contains (ref BoundingSphere sphere, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			Vector3 center = sphere.Center;
+			
+			Vector3 point;
+			Vector3.Clamp (ref center, ref Min, ref Max, out point);
+			
+			float dist;
+			Vector3.DistanceSquared (ref center, ref point, out dist);
+			
+			float radius = sphere.Radius;
+			
+			if (dist > radius)
+			{
+				result = ContainmentType.Disjoint;
+				return;
+			}
+			
+			if (Min.X + radius <= center.X && Max.X - radius >= center.X && Max.X - Min.X > radius &&
+			    Min.Y + radius <= center.Y && Max.Y - radius >= center.Y && Max.Y - Min.Y > radius &&
+			    Min.Z + radius <= center.Z && Max.Z - radius >= center.Z && Max.X - Min.X > radius)
+			{
+				result = ContainmentType.Contains;
+				return;
+			}
+			
+			result = ContainmentType.Intersects;
 		}
 		
 		public ContainmentType Contains (Vector3 point)
@@ -213,12 +237,14 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out bool result)
 		{
-			result = (Contains (box) == ContainmentType.Intersects);
+			ContainmentType containment;
+			Contains (ref box, out containment);
+			result = containment == ContainmentType.Intersects;
 		}
 		
 		public bool Intersects (BoundingFrustum frustum)
 		{
-			throw new NotImplementedException ();
+			return (Contains (frustum) == ContainmentType.Intersects);
 		}
 		
 		public bool Intersects (BoundingSphere sphere)
@@ -230,7 +256,9 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingSphere sphere, out bool result)
 		{
-			throw new NotImplementedException ();
+			ContainmentType containment;
+			Contains (ref sphere, out containment);
+			result = containment == ContainmentType.Intersects;
 		}
 		
 		public PlaneIntersectionType Intersects (Plane plane)
