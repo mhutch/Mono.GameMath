@@ -477,7 +477,23 @@ namespace Mono.GameMath
 		
 		public static void CreateScale (ref Vector3 scales, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			result = new Matrix();
+			result.M11 = scales.X;
+			result.M12 = 0.0f;
+			result.M13 = 0.0f;
+			result.M14 = 0.0f;
+			result.M21 = 0.0f;
+			result.M22 = scales.Y;
+			result.M23 = 0.0f;
+			result.M24 = 0.0f;
+			result.M31 = 0.0f;
+			result.M32 = 0.0f;
+			result.M33 = scales.Z;
+			result.M34 = 0.0f;
+			result.M41 = 0.0f;
+			result.M42 = 0.0f;
+			result.M43 = 0.0f;
+			result.M44 = 1.0f;
 		}
 		
 		public static Matrix CreateShadow (Vector3 lightDirection, Plane plane)
