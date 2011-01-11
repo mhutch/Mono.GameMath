@@ -54,7 +54,30 @@ namespace Mono.GameMath
 		
 		public void Contains (ref BoundingBox box, out ContainmentType result)
 		{
-			throw new NotImplementedException ();
+			if (!box.Intersects (this))
+			{
+				result = ContainmentType.Disjoint;
+				return;
+			}
+			
+			float radiusSq = Radius * Radius;
+			float cx = Center.X;
+			float cy = Center.Y;
+			float cz = Center.Z;
+			
+			if (new Vector3 (cx - box.Min.X, cy - box.Max.Y, cz - box.Max.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Max.X, cy - box.Max.Y, cz - box.Max.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Max.X, cy - box.Min.Y, cz - box.Max.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Min.X, cy - box.Min.Y, cz - box.Max.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Min.X, cy - box.Max.Y, cz - box.Min.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Max.X, cy - box.Max.Y, cz - box.Min.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Max.X, cy - box.Min.Y, cz - box.Min.Z).LengthSquared () > radiusSq ||
+				new Vector3 (cx - box.Min.X, cy - box.Min.Y, cz - box.Min.Z).LengthSquared () > radiusSq) {
+				result = ContainmentType.Intersects;
+				return;
+			}
+			
+			result = ContainmentType.Contains;
 		}
 		
 		public ContainmentType Contains (BoundingFrustum frustrum)
