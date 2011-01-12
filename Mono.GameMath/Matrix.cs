@@ -312,7 +312,9 @@ namespace Mono.GameMath
 		
 		public static void CreateFromYawPitchRoll (float yaw, float pitch, float roll, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			Quaternion quat;
+			Quaternion.CreateFromYawPitchRoll (yaw, pitch, roll, out quat);
+			CreateFromQuaternion (ref quat, out result);
 		}
 		
 		public static Matrix CreateLookAt (Vector3 cameraPosition, Vector3 cameraTarget, Vector3 cameraUpVector)
