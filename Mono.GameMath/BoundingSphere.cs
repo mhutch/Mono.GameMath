@@ -150,7 +150,10 @@ namespace Mono.GameMath
 		
 		public static BoundingSphere CreateFromFrustum (BoundingFrustum frustum)
 		{
-			throw new NotImplementedException ();
+			if (frustum == null)
+				throw new ArgumentNullException ("frustum");
+			
+			return CreateFromPoints (frustum.GetCorners ());
 		}
 		
 		public static BoundingSphere CreateFromPoints (IEnumerable<Vector3> points)

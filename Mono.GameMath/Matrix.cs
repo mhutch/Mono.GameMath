@@ -327,7 +327,39 @@ namespace Mono.GameMath
 		public static void CreateLookAt (ref Vector3 cameraPosition, ref Vector3 cameraTarget, ref Vector3 cameraUpVector, out Matrix result
 )
 		{
-			throw new NotImplementedException ();
+			// http://msdn.microsoft.com/en-us/library/bb205343%28VS.85%29.aspx
+			
+			Vector3 pos;
+			Vector3.Subtract (ref cameraPosition, ref cameraTarget, out pos);
+			Vector3 vz;
+			Vector3.Normalize (ref pos, out vz);
+			
+			Vector3 cross;
+			Vector3.Cross (ref cameraUpVector, ref vz, out cross);
+			Vector3 vx;
+			Vector3.Normalize (ref cross, out vx);
+			
+			Vector3 vy;
+			Vector3.Cross (ref vz, ref vx, out vy);
+			
+			float dvx, dvy, dvz;
+			Vector3.Dot (ref vx, ref cameraPosition, out dvx);
+			Vector3.Dot (ref vy, ref cameraPosition, out dvy);
+			Vector3.Dot (ref vz, ref cameraPosition, out dvz);
+			
+			result = Identity;
+			result.M11 = vx.X;
+			result.M12 = vy.X;
+			result.M13 = vz.X;
+			result.M21 = vx.Y;
+			result.M22 = vy.Y;
+			result.M23 = vz.Y;
+			result.M31 = vx.Z;
+			result.M32 = vy.Z;
+			result.M33 = vz.Z;
+			result.M41 = -dvx;
+			result.M42 = -dvy;
+			result.M43 = -dvz;
 		}
 		
 		public static Matrix CreateOrthographic (float width, float height, float zNearPlane, float zFarPlane)
@@ -425,20 +457,10 @@ namespace Mono.GameMath
 			
 			result = new Matrix ();
 			result.M11 = 1.0f;
-			result.M12 = 0.0f;
-			result.M13 = 0.0f;
-			result.M14 = 0.0f;
-			result.M21 = 0.0f;
 			result.M22 = cos;
 			result.M23 = sin;
-			result.M24 = 0.0f;
-			result.M31 = 0.0f;
 			result.M32 = -sin;
 			result.M33 = cos;
-			result.M34 = 0.0f;
-			result.M41 = 0.0f;
-			result.M42 = 0.0f;
-			result.M43 = 0.0f;
 			result.M44 = 1.0f;
 		}
 		
@@ -456,20 +478,10 @@ namespace Mono.GameMath
 			
 			result = new Matrix ();
 			result.M11 = cos;
-			result.M12 = 0.0f;
 			result.M13 = -sin;
-			result.M14 = 0.0f;
-			result.M21 = 0.0f;
 			result.M22 = 1.0f;
-			result.M23 = 0.0f;
-			result.M24 = 0.0f;
 			result.M31 = sin;
-			result.M32 = 0.0f;
 			result.M33 = cos;
-			result.M34 = 0.0f;
-			result.M41 = 0.0f;
-			result.M42 = 0.0f;
-			result.M43 = 0.0f;
 			result.M44 = 1.0f;
 		}
 		
@@ -488,19 +500,9 @@ namespace Mono.GameMath
 			result = new Matrix ();
 			result.M11 = cos;
 			result.M12 = sin;
-			result.M13 = 0.0f;
-			result.M14 = 0.0f;
 			result.M21 = -sin;
 			result.M22 = cos;
-			result.M23 = 0.0f;
-			result.M24 = 0.0f;
-			result.M31 = 0.0f;
-			result.M32 = 0.0f;
 			result.M33 = 1.0f;
-			result.M34 = 0.0f;
-			result.M41 = 0.0f;
-			result.M42 = 0.0f;
-			result.M43 = 0.0f;
 			result.M44 = 1.0f;
 		}
 		
@@ -538,20 +540,8 @@ namespace Mono.GameMath
 		{
 			result = new Matrix ();
 			result.M11 = scales.X;
-			result.M12 = 0.0f;
-			result.M13 = 0.0f;
-			result.M14 = 0.0f;
-			result.M21 = 0.0f;
 			result.M22 = scales.Y;
-			result.M23 = 0.0f;
-			result.M24 = 0.0f;
-			result.M31 = 0.0f;
-			result.M32 = 0.0f;
 			result.M33 = scales.Z;
-			result.M34 = 0.0f;
-			result.M41 = 0.0f;
-			result.M42 = 0.0f;
-			result.M43 = 0.0f;
 			result.M44 = 1.0f;
 		}
 		
@@ -591,17 +581,8 @@ namespace Mono.GameMath
 		{
 			result = new Matrix ();
 			result.M11 = 1.0f;
-			result.M12 = 0.0f;
-			result.M13 = 0.0f;
-			result.M14 = 0.0f;
-			result.M21 = 0.0f;
 			result.M22 = 1.0f;
-			result.M23 = 0.0f;
-			result.M24 = 0.0f;
-			result.M31 = 0.0f;
-			result.M32 = 0.0f;
 			result.M33 = 1.0f;
-			result.M34 = 0.0f;
 			result.M41 = position.X;
 			result.M42 = position.Y;
 			result.M43 = position.Z;
@@ -617,7 +598,21 @@ namespace Mono.GameMath
 		
 		public static void CreateWorld (ref Vector3 position, ref Vector3 forward, ref Vector3 up, out Matrix result)
 		{
-			throw new NotImplementedException ();
+			Vector3 x, y, z;
+			
+			Vector3.Cross (ref forward, ref up, out x);
+			Vector3.Cross (ref x, ref forward, out y);
+			Vector3.Normalize (ref forward, out z);
+			
+			x.Normalize ();
+			y.Normalize ();
+			
+			result = new Matrix ();
+			result.Right = x;
+			result.Up = y;
+			result.Forward = z;
+			result.Translation = position;
+			result.M44 = 1.0f;
 		}
 		
 		#endregion
