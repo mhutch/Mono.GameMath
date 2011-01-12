@@ -49,7 +49,19 @@ namespace Mono.GameMath
 		
 		public Plane (Vector3 point1, Vector3 point2, Vector3 point3)
 		{
-			throw new NotImplementedException ();
+			Vector3 a, b;
+			Vector3.Subtract (ref point2, ref point1, out a);
+			Vector3.Subtract (ref point3, ref point1, out b);
+			
+			Vector3 normal;
+			Vector3.Cross (ref a, ref b, out normal);
+			normal.Normalize ();
+			
+			float d;
+			Vector3.Dot (ref normal, ref point1, out d);
+			
+			Normal = normal;
+			D = -d;
 		}
 		
 		public Plane (Vector4 value)
@@ -107,12 +119,14 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out PlaneIntersectionType result)
 		{
-			throw new NotImplementedException ();
+			box.Intersects (ref this, out result);
 		}
 		
 		public PlaneIntersectionType Intersects (BoundingFrustum frustum)
 		{
-			throw new NotImplementedException ();
+			PlaneIntersectionType result;
+			frustum.Intersects (ref this, out result);
+			return result;
 		}
 		
 		public PlaneIntersectionType Intersects (BoundingSphere sphere)
@@ -124,7 +138,7 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingSphere sphere, out PlaneIntersectionType result)
 		{
-			throw new NotImplementedException ();
+			sphere.Intersects (ref this, out result);
 		}
 		
 		#endregion

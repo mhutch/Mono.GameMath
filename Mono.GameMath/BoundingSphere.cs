@@ -212,7 +212,21 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref Plane plane, out PlaneIntersectionType result)
 		{
-			throw new NotImplementedException ();
+			float distance;
+			Vector3.Dot (ref plane.Normal, ref Center, out distance);
+			distance += plane.D;
+			
+			if (distance > Radius) {
+				result = PlaneIntersectionType.Front;
+				return;
+			}
+			
+			if (distance < -Radius) {
+				result = PlaneIntersectionType.Back;
+				return;
+			}
+			
+			result = PlaneIntersectionType.Intersecting;
 		}
 		
 		public float? Intersects (Ray ray)
