@@ -54,6 +54,9 @@ namespace Mono.GameMath
 		
 		public Nullable<float> Intersects (BoundingFrustum frustum)
 		{
+			if (frustum == null)
+				throw new ArgumentNullException ("frustum");
+			
 			throw new NotImplementedException ();
 		}
 		

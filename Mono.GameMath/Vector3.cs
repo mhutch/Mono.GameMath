@@ -359,7 +359,6 @@ namespace Mono.GameMath
 				MathHelper.CatmullRom (value1.Z, value2.Z, value3.Z, value4.Z, amount),
 				0);
 #else
-			//FIXME: probably more efficient to share work between values
 			result.x = MathHelper.CatmullRom (value1.x, value2.x, value3.x, value4.x, amount);
 			result.y = MathHelper.CatmullRom (value1.y, value2.y, value3.y, value4.y, amount);
 			result.z = MathHelper.CatmullRom (value1.z, value2.z, value3.z, value4.z, amount);
@@ -461,7 +460,6 @@ namespace Mono.GameMath
 				MathHelper.Barycentric (value1.Z, value2.Z, value3.Z, amount1, amount2),
 				0);
 #else
-			//FIXME: probably more efficient to share work between values
 			result.x = MathHelper.Barycentric (value1.x, value2.x, value3.x, amount1, amount2);
 			result.y = MathHelper.Barycentric (value1.y, value2.y, value3.y, amount1, amount2);
 			result.z = MathHelper.Barycentric (value1.z, value2.z, value3.z, amount1, amount2);

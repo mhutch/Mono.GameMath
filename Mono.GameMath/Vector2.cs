@@ -286,7 +286,6 @@ namespace Mono.GameMath
 		public static void CatmullRom (ref Vector2 value1, ref Vector2 value2, ref Vector2 value3, ref Vector2 value4,
 			float amount, out Vector2 result)
 		{
-			//FIXME: probably more efficient to share work between values
 			result.x = MathHelper.CatmullRom (value1.x, value2.x, value3.x, value4.x, amount);
 			result.y = MathHelper.CatmullRom (value1.y, value2.y, value3.y, value4.y, amount);;
 		}
@@ -353,7 +352,6 @@ namespace Mono.GameMath
 		public static void Barycentric (ref Vector2 value1, ref Vector2 value2, ref Vector2 value3, float amount1,
 			float amount2, out Vector2 result)
 		{
-			//FIXME: probably more efficient to share work between values
 			result.x = MathHelper.Barycentric (value1.x, value2.x, value3.x, amount1, amount2);
 			result.y = MathHelper.Barycentric (value1.y, value2.y, value3.y, amount1, amount2);
 		}
