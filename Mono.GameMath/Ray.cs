@@ -49,7 +49,7 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingBox box, out Nullable<float> result)
 		{
-			throw new NotImplementedException ();
+			box.Intersects (ref this, out result);
 		}
 		
 		public Nullable<float> Intersects (BoundingFrustum frustum)
@@ -57,7 +57,7 @@ namespace Mono.GameMath
 			if (frustum == null)
 				throw new ArgumentNullException ("frustum");
 			
-			throw new NotImplementedException ();
+			return frustum.Intersects (this);
 		}
 		
 		public Nullable<float> Intersects (BoundingSphere sphere)
@@ -69,7 +69,7 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref BoundingSphere sphere, out Nullable<float> result)
 		{
-			throw new NotImplementedException ();
+			sphere.Intersects (ref this, out result);
 		}
 		
 		public Nullable<float> Intersects (Plane plane)

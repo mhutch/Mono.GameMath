@@ -141,7 +141,11 @@ namespace Mono.GameMath
 		
 		public static void CreateFromBoundingBox (ref BoundingBox box, out BoundingSphere result)
 		{
-			throw new NotImplementedException ();
+			Vector3.Lerp (ref box.Min, ref box.Max, 0.5f, out result.Center);
+			
+			float distance;
+			Vector3.Distance (ref box.Min, ref box.Max, out distance);
+			result.Radius = distance * 0.5f;
 		}
 		
 		public static BoundingSphere CreateFromFrustum (BoundingFrustum frustum)
