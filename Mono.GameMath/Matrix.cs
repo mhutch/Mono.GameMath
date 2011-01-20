@@ -452,8 +452,8 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationX (float radians, out Matrix result)
 		{
-			float cos = (float) Math.Cos (radians);
-			float sin = (float) Math.Sin (radians);
+			float cos = (float) System.Math.Cos (radians);
+			float sin = (float) System.Math.Sin (radians);
 			
 			result = new Matrix ();
 			result.M11 = 1.0f;
@@ -473,8 +473,8 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationY (float radians, out Matrix result)
 		{
-			float cos = (float) Math.Cos (radians);
-			float sin = (float) Math.Sin (radians);
+			float cos = (float) System.Math.Cos (radians);
+			float sin = (float) System.Math.Sin (radians);
 			
 			result = new Matrix ();
 			result.M11 = cos;
@@ -494,8 +494,8 @@ namespace Mono.GameMath
 		
 		public static void CreateRotationZ (float radians, out Matrix result)
 		{
-			float cos = (float) Math.Cos (radians);
-			float sin = (float) Math.Sin (radians);
+			float cos = (float) System.Math.Cos (radians);
+			float sin = (float) System.Math.Sin (radians);
 			
 			result = new Matrix ();
 			result.M11 = cos;

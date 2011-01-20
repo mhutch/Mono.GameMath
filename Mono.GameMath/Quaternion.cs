@@ -68,9 +68,9 @@ namespace Mono.GameMath
 			Vector3 vec = axis;
 			vec.Normalize ();
 			float ang = angle * 0.5f;
-			Vector3.Multiply (ref vec, (float) Math.Sin (ang), out vec);
+			Vector3.Multiply (ref vec, (float) System.Math.Sin (ang), out vec);
 			
-			result = new Quaternion (vec, (float)Math.Cos (ang));
+			result = new Quaternion (vec, (float) System.Math.Cos (ang));
 		}
 		
 		public static Quaternion CreateFromRotationMatrix (Matrix matrix)
@@ -101,12 +101,12 @@ namespace Mono.GameMath
 			pitch *= 0.5f;
 			roll *= 0.5f;
 			
-			float cosYaw = (float) Math.Cos (yaw);
-			float sinYaw = (float) Math.Sin (yaw);
-			float cosPitch = (float) Math.Cos (pitch);
-			float sinPitch = (float) Math.Sin (pitch);
-			float cosRoll = (float) Math.Cos (roll);
-			float sinRoll = (float) Math.Sin (roll);
+			float cosYaw = (float) System.Math.Cos (yaw);
+			float sinYaw = (float) System.Math.Sin (yaw);
+			float cosPitch = (float) System.Math.Cos (pitch);
+			float sinPitch = (float) System.Math.Sin (pitch);
+			float cosRoll = (float) System.Math.Cos (roll);
+			float sinRoll = (float) System.Math.Sin (roll);
 			
 			float cosPitchCosYaw = cosPitch * cosYaw;
 			float sinPitchSinYaw = sinPitch * sinYaw;
