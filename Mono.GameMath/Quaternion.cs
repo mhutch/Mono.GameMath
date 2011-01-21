@@ -247,6 +247,28 @@ namespace Mono.GameMath
 			Multiply (ref quaternion1, ref inv, out result);
 		}
 		
+		public static Quaternion Divide (Quaternion quaternion1, float scaleFactor)
+		{
+#if SIMD
+			return new Quaternion (quaternion1.v4 / new Vector4f (scaleFactor));
+#else
+			return new Quaternion (quaternion1.x / scaleFactor, quaternion1.y / scaleFactor,
+				quaternion1.z / scaleFactor, quaternion1.w / scaleFactor);
+#endif
+		}
+		
+		public static void Divide (ref Quaternion quaternion1, float scaleFactor, out Quaternion result)
+		{
+#if SIMD
+			result.v4 = quaternion1.v4 / new Vector4f (scaleFactor);
+#else
+			result.x = quaternion1.x / scaleFactor;
+			result.y = quaternion1.y / scaleFactor;
+			result.z = quaternion1.z / scaleFactor;
+			result.w = quaternion1.w / scaleFactor;
+#endif
+		}
+		
 		public static Quaternion Negate (Quaternion quaternion)
 		{
 #if SIMD
@@ -286,6 +308,15 @@ namespace Mono.GameMath
 			Quaternion result;
 			Divide (ref quaternion1, ref quaternion2, out result);
 			return result;
+		}
+		
+		public static Quaternion operator / (Quaternion quaternion, float scaleFactor)
+		{
+#if SIMD
+			return new Quaternion (quaternion.v4 / new Vector4f (scaleFactor));
+#else
+			return Divide (quaternion, scaleFactor);
+#endif
 		}
 		
 		public static Quaternion operator * (Quaternion quaternion1, Quaternion quaternion2)
@@ -422,7 +453,15 @@ namespace Mono.GameMath
 		
 		public static void Lerp (ref Quaternion quaternion1, ref Quaternion quaternion2, float amount, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			Quaternion q1;
+			Multiply (ref quaternion1, 1.0f - amount, out q1);
+			
+			Quaternion q2;
+			Multiply (ref quaternion2, amount, out q2);
+			
+			Quaternion q1q2;
+			Add (ref q1, ref q2, out q1q2);
+			Normalize (ref q1q2, out result);
 		}
 		
 		public void Normalize ()
@@ -451,7 +490,39 @@ namespace Mono.GameMath
 		
 		public static void Slerp (ref Quaternion quaternion1, ref Quaternion quaternion2, float amount, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			float dot;
+			Dot (ref quaternion1, ref quaternion2, out dot);
+			
+			Quaternion q3;
+			
+			if (dot < 0.0f) {
+				dot = -dot;
+				Negate (ref quaternion2, out q3);
+			}
+			else {
+				q3 = quaternion2;
+			}
+			
+			if (dot < 0.999999f) {
+				float angle = (float) System.Math.Acos (dot);
+				float sin1 = (float) System.Math.Sin (angle * (1.0f - amount));
+				float sin2 = (float) System.Math.Sin (angle * amount);
+				float sin3 = (float) System.Math.Sin (angle);
+				
+				Quaternion q1;
+				Multiply (ref quaternion1, sin1, out q1);
+				
+				Quaternion q2;
+				Multiply (ref q3, sin2, out q2);
+				
+				Quaternion q4;
+				Add (ref q1, ref q2, out q4);
+				
+				Divide (ref q4, sin3, out result);
+			}
+			else {
+				Lerp (ref quaternion1, ref q3, amount, out result);
+			}
 		}
 		
 		#endregion
