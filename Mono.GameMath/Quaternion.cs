@@ -194,12 +194,21 @@ namespace Mono.GameMath
 		
 		public static Quaternion Multiply (Quaternion quaternion1, Quaternion quaternion2)
 		{
-			throw new NotImplementedException ();
+			// TODO: SIMD optimization
+			return new Quaternion (
+				quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y,
+				quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X,
+				quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W,
+				quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z);
 		}
 		
 		public static void Multiply (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			// TODO: SIMD optimization
+			result.X = quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y;
+			result.Y = quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X;
+			result.Z = quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W;
+			result.W = quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z;
 		}
 		
 		public static Quaternion Multiply (Quaternion quaternion1, float scaleFactor)
@@ -226,12 +235,15 @@ namespace Mono.GameMath
 		
 		public static Quaternion Divide (Quaternion quaternion1, Quaternion quaternion2)
 		{
-			throw new NotImplementedException ();
+			Quaternion result;
+			Divide (ref quaternion1, ref quaternion2, out result);
+			return result;
 		}
 		
 		public static void Divide (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			Inverse (ref quaternion2, out result);
+			Multiply (ref quaternion1, ref result, out result);
 		}
 		
 		public static Quaternion Negate (Quaternion quaternion)
@@ -270,12 +282,19 @@ namespace Mono.GameMath
 		
 		public static Quaternion operator / (Quaternion quaternion1, Quaternion quaternion2)
 		{
-			throw new NotImplementedException ();
+			Quaternion result;
+			Divide (ref quaternion1, ref quaternion2, out result);
+			return result;
 		}
 		
 		public static Quaternion operator * (Quaternion quaternion1, Quaternion quaternion2)
 		{
-			throw new NotImplementedException ();
+			// TODO: SIMD optimization
+			return new Quaternion (
+				quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y,
+				quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X,
+				quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W,
+				quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z);
 		}
 		
 		public static Quaternion operator * (Quaternion quaternion, float scaleFactor)
