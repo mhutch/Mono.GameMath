@@ -352,7 +352,6 @@ namespace Mono.GameMath
 			float amount, out Vector4 result)
 		{
 #if SIMD
-			//FIXME: probably more efficient to share work between values
 			result.v4 = new Vector4f (
 				MathHelper.CatmullRom (value1.X, value2.X, value3.X, value4.X, amount),
 				MathHelper.CatmullRom (value1.Y, value2.Y, value3.Y, value4.Y, amount),
