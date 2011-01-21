@@ -242,8 +242,9 @@ namespace Mono.GameMath
 		
 		public static void Divide (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
-			Inverse (ref quaternion2, out result);
-			Multiply (ref quaternion1, ref result, out result);
+			Quaternion inv;
+			Inverse (ref quaternion2, out inv);
+			Multiply (ref quaternion1, ref inv, out result);
 		}
 		
 		public static Quaternion Negate (Quaternion quaternion)
