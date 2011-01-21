@@ -338,7 +338,7 @@ namespace Mono.GameMath
 		
 		public static void Concatenate (ref Quaternion value1, ref Quaternion value2, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+			Multiply (ref value1, ref value2, out result);
 		}
 		
 		public void Conjugate ()
