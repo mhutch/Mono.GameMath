@@ -106,11 +106,12 @@ namespace Mono.GameMath
 		
 		public static float SmoothStep (float value1, float value2, float amount)
 		{
-			//FIXME: check this
-			//the function is Smoothstep (http://en.wikipedia.org/wiki/Smoothstep) but the usage has been altered
+			// the function is Smoothstep (http://en.wikipedia.org/wiki/Smoothstep) but the usage has been altered
 			// to be similar to Lerp
-			amount = amount * amount * (3f - 2f * amount);
-			return value1 + (value2 - value1) * amount;
+			// See also: http://http.developer.nvidia.com/Cg/smoothstep.html
+			
+			amount = Clamp (amount, 0.0f, 1.0f);
+			return Lerp (value1, value2, (amount * amount) * (3.0f - (2.0f * amount)));
 		}
 		
 		public static float ToDegrees (float radians)
