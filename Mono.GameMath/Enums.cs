@@ -25,17 +25,25 @@
 // THE SOFTWARE.
 using System;
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public enum ContainmentType
 	{
 		Contains,
 		Disjoint,
 		Intersects
 	}
-	
-	[Serializable]
+
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public enum PlaneIntersectionType
 	{
 		Back,

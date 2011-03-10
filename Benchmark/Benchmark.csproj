@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Safe</Configuration>
@@ -12,11 +12,12 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Safe|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
     <OutputPath>bin\Safe</OutputPath>
     <WarningLevel>4</WarningLevel>
-    <DefineConstants>SAFE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SAFE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Unsafe|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -53,6 +54,9 @@
     <DefineConstants>SAFE</DefineConstants>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'XnaReplace|AnyCPU'">
+    <OutputPath>bin\XnaReplace\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System">
     </Reference>
@@ -69,12 +73,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\Mono.GameMath\Mono.GameMath.csproj" Condition="'$(Configuration)'!='Xna'">
+    <ProjectReference Include="..\Mono.GameMath\Mono.GameMath.csproj">
       <Project>{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}</Project>
       <Name>Mono.GameMath</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Micro\" />
   </ItemGroup>
 </Project>

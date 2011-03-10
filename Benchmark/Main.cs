@@ -27,13 +27,15 @@ using System;
 using System.Reflection;
 using System.IO;
 
+using Mono.GameMath;
+
 namespace Benchmark
 {
 	class Driver
-	{
-		public static int Main (string[] args)
-		{
-			string type = null;
+	{                
+        public static int Main (string[] args)
+		{            
+            string type = null;
 			string method = null;
 			if (args.Length > 0 && args[0] != "*")
 				type = args[0];

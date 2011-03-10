@@ -25,9 +25,15 @@
 // THE SOFTWARE.
 using System;
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Point : IEquatable<Point>
 	{
 		public int X, Y;

@@ -29,9 +29,15 @@ using System;
 using Mono.Simd;
 #endif
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Vector2 : IEquatable<Vector2>
 	{
 		float x, y;

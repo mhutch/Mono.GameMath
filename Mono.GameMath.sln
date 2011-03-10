@@ -5,15 +5,41 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.GameMath", "Mono.GameM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{5A022A72-8858-4BCB-8380-7522C35E0006}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mono.GameMath.Silverlight", "Mono.GameMath\Mono.GameMath.Silverlight.csproj", "{6703EC70-C5F6-450E-8901-8642A3CE2174}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 		Safe|Any CPU = Safe|Any CPU
-		Unsafe|Any CPU = Unsafe|Any CPU
-		Simd|Any CPU = Simd|Any CPU
-		Xna|Any CPU = Xna|Any CPU
 		SafeX86|Any CPU = SafeX86|Any CPU
+		Simd|Any CPU = Simd|Any CPU
+		Unsafe|Any CPU = Unsafe|Any CPU
+		Xna|Any CPU = Xna|Any CPU
+		XnaReplace|Any CPU = XnaReplace|Any CPU
+		XnaReplaceSimd|Any CPU = XnaReplaceSimd|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Debug|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Debug|Any CPU.Build.0 = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Release|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Release|Any CPU.Build.0 = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.Build.0 = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.SafeX86|Any CPU.ActiveCfg = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.ActiveCfg = Simd|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.Build.0 = Simd|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Xna|Any CPU.ActiveCfg = Safe|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.XnaReplace|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.XnaReplace|Any CPU.Build.0 = XnaReplace|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.XnaReplaceSimd|Any CPU.ActiveCfg = XnaReplaceSimd|Any CPU
+		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.XnaReplaceSimd|Any CPU.Build.0 = XnaReplaceSimd|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Debug|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Debug|Any CPU.Build.0 = XnaReplace|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Release|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.Release|Any CPU.Build.0 = XnaReplace|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Safe|Any CPU.Build.0 = Safe|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.SafeX86|Any CPU.ActiveCfg = SafeX86|Any CPU
@@ -24,14 +50,31 @@ Global
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Xna|Any CPU.ActiveCfg = Xna|Any CPU
 		{5A022A72-8858-4BCB-8380-7522C35E0006}.Xna|Any CPU.Build.0 = Xna|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.ActiveCfg = Safe|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Safe|Any CPU.Build.0 = Safe|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.SafeX86|Any CPU.ActiveCfg = Safe|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.ActiveCfg = Simd|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Simd|Any CPU.Build.0 = Simd|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.ActiveCfg = Unsafe|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Unsafe|Any CPU.Build.0 = Unsafe|Any CPU
-		{DAC0541A-CB1C-44CA-BE7C-BF6CD5A8A9EE}.Xna|Any CPU.ActiveCfg = Safe|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.XnaReplace|Any CPU.ActiveCfg = XnaReplace|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.XnaReplace|Any CPU.Build.0 = XnaReplace|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.XnaReplaceSimd|Any CPU.ActiveCfg = Simd|Any CPU
+		{5A022A72-8858-4BCB-8380-7522C35E0006}.XnaReplaceSimd|Any CPU.Build.0 = Simd|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Safe|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Safe|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.SafeX86|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.SafeX86|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Simd|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Simd|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Unsafe|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Unsafe|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Xna|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.Xna|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.XnaReplace|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.XnaReplace|Any CPU.Build.0 = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.XnaReplaceSimd|Any CPU.ActiveCfg = Release|Any CPU
+		{6703EC70-C5F6-450E-8901-8642A3CE2174}.XnaReplaceSimd|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Benchmark\Benchmark.csproj

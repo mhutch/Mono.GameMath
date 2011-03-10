@@ -29,9 +29,15 @@ using System;
 using Mono.Simd;
 #endif
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Matrix : IEquatable<Matrix>
 	{
 #if SIMD
@@ -261,7 +267,41 @@ namespace Mono.GameMath
 		public static void CreateBillboard (ref Vector3 objectPosition, ref Vector3 cameraPosition,
 			ref Vector3 cameraUpVector, Vector3? cameraForwardVector, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            Vector3 vector;
+            Vector3 vector2;
+            Vector3 vector3;
+            vector.x = objectPosition.X - cameraPosition.X;
+            vector.y = objectPosition.Y - cameraPosition.Y;
+            vector.z = objectPosition.Z - cameraPosition.Z;
+            float num = vector.LengthSquared();
+            if (num < 0.0001f)
+            {
+                vector = cameraForwardVector.HasValue ? -cameraForwardVector.Value : Vector3.Forward;
+            }
+            else
+            {
+                Vector3.Multiply(ref vector, (float)(1f / ((float)Math.Sqrt((double)num))), out vector);
+            }
+            Vector3.Cross(ref cameraUpVector, ref vector, out vector3);
+            vector3.Normalize();
+            Vector3.Cross(ref vector, ref vector3, out vector2);
+            result = new Matrix();
+            result.M11 = vector3.X;
+            result.M12 = vector3.Y;
+            result.M13 = vector3.Z;
+            result.M14 = 0f;
+            result.M21 = vector2.X;
+            result.M22 = vector2.Y;
+            result.M23 = vector2.Z;
+            result.M24 = 0f;
+            result.M31 = vector.X;
+            result.M32 = vector.Y;
+            result.M33 = vector.Z;
+            result.M34 = 0f;
+            result.M41 = objectPosition.X;
+            result.M42 = objectPosition.Y;
+            result.M43 = objectPosition.Z;
+            result.M44 = 1f;
 		}
 		
 		public static Matrix CreateConstrainedBillboard (Vector3 objectPosition, Vector3 cameraPosition,
@@ -276,7 +316,70 @@ namespace Mono.GameMath
 		public static void CreateConstrainedBillboard (ref Vector3 objectPosition, ref Vector3 cameraPosition, 
 			ref Vector3 rotateAxis, Vector3? cameraForwardVector, Vector3? objectForwardVector, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            float num;
+            Vector3 vector;
+            Vector3 vector2;
+            Vector3 vector3;
+            vector2.x = objectPosition.X - cameraPosition.X;
+            vector2.y = objectPosition.Y - cameraPosition.Y;
+            vector2.z = objectPosition.Z - cameraPosition.Z;
+            float num2 = vector2.LengthSquared();
+            if (num2 < 0.0001f)
+            {
+                vector2 = cameraForwardVector.HasValue ? -cameraForwardVector.Value : Vector3.Forward;
+            }
+            else
+            {
+                Vector3.Multiply(ref vector2, (float)(1f / ((float)Math.Sqrt((double)num2))), out vector2);
+            }
+            Vector3 vector4 = rotateAxis;
+            Vector3.Dot(ref rotateAxis, ref vector2, out num);
+            if (Math.Abs(num) > 0.9982547f)
+            {
+                if (objectForwardVector.HasValue)
+                {
+                    vector = objectForwardVector.Value;
+                    Vector3.Dot(ref rotateAxis, ref vector, out num);
+                    if (Math.Abs(num) > 0.9982547f)
+                    {
+                        num = ((rotateAxis.X * Vector3.Forward.X) + (rotateAxis.Y * Vector3.Forward.Y)) + (rotateAxis.Z * Vector3.Forward.Z);
+                        vector = (Math.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
+                    }
+                }
+                else
+                {
+                    num = ((rotateAxis.X * Vector3.Forward.X) + (rotateAxis.Y * Vector3.Forward.Y)) + (rotateAxis.Z * Vector3.Forward.Z);
+                    vector = (Math.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
+                }
+                Vector3.Cross(ref rotateAxis, ref vector, out vector3);
+                vector3.Normalize();
+                Vector3.Cross(ref vector3, ref rotateAxis, out vector);
+                vector.Normalize();
+            }
+            else
+            {
+                Vector3.Cross(ref rotateAxis, ref vector2, out vector3);
+                vector3.Normalize();
+                Vector3.Cross(ref vector3, ref vector4, out vector);
+                vector.Normalize();
+            }
+            result = new Matrix();
+            result.M11 = vector3.X;
+            result.M12 = vector3.Y;
+            result.M13 = vector3.Z;
+            result.M14 = 0f;
+            result.M21 = vector4.X;
+            result.M22 = vector4.Y;
+            result.M23 = vector4.Z;
+            result.M24 = 0f;
+            result.M31 = vector.X;
+            result.M32 = vector.Y;
+            result.M33 = vector.Z;
+            result.M34 = 0f;
+            result.M41 = objectPosition.X;
+            result.M42 = objectPosition.Y;
+            result.M43 = objectPosition.Z;
+            result.M44 = 1f;
 		}
 		
 		public static Matrix CreateFromAxisAngle (Vector3 axis, float angle)
@@ -288,7 +391,34 @@ namespace Mono.GameMath
 		
 		public static void CreateFromAxisAngle (ref Vector3 axis, float angle, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            result = new Matrix();
+            float x = axis.X;
+            float y = axis.Y;
+            float z = axis.Z;
+            float sin = (float)Math.Sin((double)angle);
+            float cos = (float)Math.Cos((double)angle);
+            float xx = x * x;
+            float yy = y * y;
+            float zz = z * z;
+            float xy = x * y;
+            float xz = x * z;
+            float yz = y * z;
+            result.M11 = xx + (cos * (1f - xx));
+            result.M12 = (xy - (cos * xy)) + (sin * z);
+            result.M13 = (xz - (cos * xz)) - (sin * y);
+            //result.M14 = 0f;
+            result.M21 = (xy - (cos * xy)) - (sin * z);
+            result.M22 = yy + (cos * (1f - yy));
+            result.M23 = (yz - (cos * yz)) + (sin * x);
+            //result.M24 = 0f;
+            result.M31 = (xz - (cos * xz)) + (sin * y);
+            result.M32 = (yz - (cos * yz)) - (sin * x);
+            result.M33 = zz + (cos * (1f - zz));
+            //result.M34 = 0f;
+            //result.M41 = 0f;
+            //result.M42 = 0f;
+            //result.M43 = 0f;
+            result.M44 = 1f;
 		}
 		
 		public static Matrix CreateFromQuaternion (Quaternion quaternion)
@@ -299,8 +429,37 @@ namespace Mono.GameMath
 		}
 		
 		public static void CreateFromQuaternion (ref Quaternion quaternion, out Matrix result)
-		{
-			throw new NotImplementedException ();
+		{            
+            float xx = quaternion.X * quaternion.X;
+            float yy = quaternion.Y * quaternion.Y;
+            float zz = quaternion.Z * quaternion.Z;
+            float xy = quaternion.X * quaternion.Y;
+            float zw = quaternion.Z * quaternion.W;
+            float zx = quaternion.Z * quaternion.X;
+            float yw = quaternion.Y * quaternion.W;
+            float yz = quaternion.Y * quaternion.Z;
+            float xw = quaternion.X * quaternion.W;
+
+            result = new Matrix();
+            
+            result.M11 = 1f - (2f * (yy + zz));            
+            result.M12 = 2f * (xy + zw);
+            result.M13 = 2f * (zx - yw);
+            //result.M14 = 0f;
+            result.M21 = 2f * (xy - zw);
+            result.M22 = 1f - (2f * (zz + xx));
+            result.M23 = 2f * (yz + xw);
+            //result.M24 = 0f;
+            result.M31 = 2f * (zx + yw);
+            result.M32 = 2f * (yz - xw);
+            result.M33 = 1f - (2f * (yy + xx));
+            //result.M34 = 0f;
+            //result.M41 = 0f;
+            //result.M42 = 0f;
+            //result.M43 = 0f;
+            result.M44 = 1f;
+            
+            
 		}
 		
 		public static Matrix CreateFromYawPitchRoll (float yaw, float pitch, float roll)
@@ -372,7 +531,16 @@ namespace Mono.GameMath
 		public static void CreateOrthographic (float width, float height, float zNearPlane, float zFarPlane,
 			out Matrix result)
 		{
-			throw new NotImplementedException ();
+            result = new Matrix();
+            result.M11 = 2f / width;
+            //result.M12 = result.M13 = result.M14 = 0f;
+            result.M22 = 2f / height;
+            //result.M21 = result.M23 = result.M24 = 0f;
+            result.M33 = 1f / (zNearPlane - zFarPlane);
+            result.M31 = result.M32 = result.M34 = 0f;
+            //result.M41 = result.M42 = 0f;
+            result.M43 = zNearPlane / (zNearPlane - zFarPlane);
+            result.M44 = 1f;
 		}
 		
 		public static Matrix CreateOrthographicOffCenter (float left, float right, float bottom, float top,
@@ -386,7 +554,17 @@ namespace Mono.GameMath
 		public static void CreateOrthographicOffCenter (float left, float right, float bottom, float top,
 			float zNearPlane, float zFarPlane, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            result = new Matrix();
+            result.M11 = 2f / (right - left);
+            //result.M12 = result.M13 = result.M14 = 0f;
+            result.M22 = 2f / (top - bottom);
+            //result.M21 = result.M23 = result.M24 = 0f;
+            result.M33 = 1f / (zNearPlane - zFarPlane);
+            //result.M31 = result.M32 = result.M34 = 0f;
+            result.M41 = (left + right) / (left - right);
+            result.M42 = (top + bottom) / (bottom - top);
+            result.M43 = zNearPlane / (zNearPlane - zFarPlane);
+            result.M44 = 1f;
 		}
 		
 		public static Matrix CreatePerspective (float width, float height, float nearPlaneDistance, 
@@ -400,7 +578,28 @@ namespace Mono.GameMath
 		public static void CreatePerspective (float width, float height, float nearPlaneDistance,
 			float farPlaneDistance, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            if (nearPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance"); //, string.Format(CultureInfo.CurrentCulture, FrameworkResources.NegativePlaneDistance, new object[] { "nearPlaneDistance" }));
+            }
+            if (farPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("farPlaneDistance"); //, string.Format(CultureInfo.CurrentCulture, FrameworkResources.NegativePlaneDistance, new object[] { "farPlaneDistance" }));
+            }
+            if (nearPlaneDistance >= farPlaneDistance)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance"); //, FrameworkResources.OppositePlanes);
+            }
+            result = new Matrix();
+            result.M11 = (2f * nearPlaneDistance) / width;
+            //result.M12 = result.M13 = result.M14 = 0f;
+            result.M22 = (2f * nearPlaneDistance) / height;
+            //result.M21 = result.M23 = result.M24 = 0f;
+            result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+            //result.M31 = result.M32 = 0f;
+            result.M34 = -1f;
+            //result.M41 = result.M42 = result.M44 = 0f;
+            result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
 		}
 		
 		public static Matrix CreatePerspectiveFieldOfView (float fieldOfView, float aspectRatio,
@@ -414,7 +613,34 @@ namespace Mono.GameMath
 		public static void CreatePerspectiveFieldOfView (float fieldOfView, float aspectRatio, float nearPlaneDistance,
 			float farPlaneDistance, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            if ((fieldOfView <= 0f) || (fieldOfView >= MathHelper.Pi))
+            {
+                throw new ArgumentOutOfRangeException("fieldOfView"); 
+            }
+            if (nearPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance");
+            }
+            if (farPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("farPlaneDistance");
+            }
+            if (nearPlaneDistance >= farPlaneDistance)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance");
+            }
+            float num = 1f / ((float)Math.Tan((double)(fieldOfView * 0.5f)));
+            float num9 = num / aspectRatio;
+            result = new Matrix();
+            result.M11 = num9;
+            //result.M12 = result.m13 = result.m14 = 0f;
+            result.M22 = num;
+            //result.M21 = result.m23 = result.m24 = 0f;
+            //result.M31 = result.m32 = 0f;
+            result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+            result.M34 = -1f;
+           // result.M41 = result.m42 = result.m44 = 0f;
+            result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
 		}
 		
 		public static Matrix CreatePerspectiveOffCenter (float left, float right, float bottom, float top,
@@ -428,7 +654,29 @@ namespace Mono.GameMath
 		public static void CreatePerspectiveOffCenter (float left, float right, float bottom, float top, 
 			float nearPlaneDistance, float farPlaneDistance, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            if (nearPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance"); //, string.Format(CultureInfo.CurrentCulture, FrameworkResources.NegativePlaneDistance, new object[] { "nearPlaneDistance" }));
+            }
+            if (farPlaneDistance <= 0f)
+            {
+                throw new ArgumentOutOfRangeException("farPlaneDistance"); //, string.Format(CultureInfo.CurrentCulture, FrameworkResources.NegativePlaneDistance, new object[] { "farPlaneDistance" }));
+            }
+            if (nearPlaneDistance >= farPlaneDistance)
+            {
+                throw new ArgumentOutOfRangeException("nearPlaneDistance"); //, FrameworkResources.OppositePlanes);
+            }
+            result = new Matrix();
+            result.M11 = (2f * nearPlaneDistance) / (right - left);
+            //result.M12 = result.M13 = result.M14 = 0f;
+            result.M22 = (2f * nearPlaneDistance) / (top - bottom);
+            //result.M21 = result.M23 = result.M24 = 0f;
+            result.M31 = (left + right) / (right - left);
+            result.M32 = (top + bottom) / (top - bottom);
+            result.M33 = farPlaneDistance / (nearPlaneDistance - farPlaneDistance);
+            result.M34 = -1f;
+            result.M43 = (nearPlaneDistance * farPlaneDistance) / (nearPlaneDistance - farPlaneDistance);
+            result.M41 = result.M42 = result.M44 = 0f;
 		}
 		
 		public static Matrix CreateReflection (Plane value)
@@ -440,7 +688,33 @@ namespace Mono.GameMath
 		
 		public static void CreateReflection (ref Plane value, out Matrix result)
 		{
-			throw new NotImplementedException ();
+            Plane plane;
+            Plane.Normalize(ref value, out plane);
+            value.Normalize();
+            float x = plane.Normal.X;
+            float y = plane.Normal.Y;
+            float z = plane.Normal.Z;
+            float num3 = -2f * x;
+            float num2 = -2f * y;
+            float num = -2f * z;
+            result = new Matrix();
+            result.M11 = (num3 * x) + 1f;
+            result.M12 = num2 * x;
+            result.M13 = num * x;
+            //result.M14 = 0f;
+            result.M21 = num3 * y;
+            result.M22 = (num2 * y) + 1f;
+            result.M23 = num * y;
+            //result.M24 = 0f;
+            result.M31 = num3 * z;
+            result.M32 = num2 * z;
+            result.M33 = (num * z) + 1f;
+            //result.M34 = 0f;
+            result.M41 = num3 * plane.D;
+            result.M42 = num2 * plane.D;
+            result.M43 = num * plane.D;
+            result.M44 = 1f;
+
 		}
 		
 		public static Matrix CreateRotationX (float radians)
@@ -702,25 +976,38 @@ namespace Mono.GameMath
 			result.r3 = c3;
 			result.r4 = c4;
 #else
-			result.m11 = matrix1.m11*matrix2.m11 + matrix1.m12*matrix2.m21 + matrix1.m13*matrix2.m31 + matrix1.m14*matrix2.m41;
-			result.m12 = matrix1.m11*matrix2.m12 + matrix1.m12*matrix2.m22 + matrix1.m13*matrix2.m32 + matrix1.m14*matrix2.m42;
-			result.m13 = matrix1.m11*matrix2.m13 + matrix1.m12*matrix2.m23 + matrix1.m13*matrix2.m33 + matrix1.m14*matrix2.m43;
-			result.m14 = matrix1.m11*matrix2.m14 + matrix1.m12*matrix2.m24 + matrix1.m13*matrix2.m34 + matrix1.m14*matrix2.m44;
-				
-			result.m21 = matrix1.m21*matrix2.m11 + matrix1.m22*matrix2.m21 + matrix1.m23*matrix2.m31 + matrix1.m24*matrix2.m41;
-			result.m22 = matrix1.m21*matrix2.m12 + matrix1.m22*matrix2.m22 + matrix1.m23*matrix2.m32 + matrix1.m24*matrix2.m42;
-			result.m23 = matrix1.m21*matrix2.m13 + matrix1.m22*matrix2.m23 + matrix1.m23*matrix2.m33 + matrix1.m24*matrix2.m43;
-			result.m24 = matrix1.m21*matrix2.m14 + matrix1.m22*matrix2.m24 + matrix1.m23*matrix2.m34 + matrix1.m24*matrix2.m44;
-			
-			result.m31 = matrix1.m31*matrix2.m11 + matrix1.m32*matrix2.m21 + matrix1.m33*matrix2.m31 + matrix1.m34*matrix2.m41;
-			result.m32 = matrix1.m31*matrix2.m12 + matrix1.m32*matrix2.m22 + matrix1.m33*matrix2.m32 + matrix1.m34*matrix2.m42;
-			result.m33 = matrix1.m31*matrix2.m13 + matrix1.m32*matrix2.m23 + matrix1.m33*matrix2.m33 + matrix1.m34*matrix2.m43;
-			result.m34 = matrix1.m31*matrix2.m14 + matrix1.m32*matrix2.m24 + matrix1.m33*matrix2.m34 + matrix1.m34*matrix2.m44;
-			
-			result.m41 = matrix1.m41*matrix2.m11 + matrix1.m42*matrix2.m21 + matrix1.m43*matrix2.m31 + matrix1.m44*matrix2.m41;
-			result.m42 = matrix1.m41*matrix2.m12 + matrix1.m42*matrix2.m22 + matrix1.m43*matrix2.m32 + matrix1.m44*matrix2.m42;
-			result.m43 = matrix1.m41*matrix2.m13 + matrix1.m42*matrix2.m23 + matrix1.m43*matrix2.m33 + matrix1.m44*matrix2.m43;
-			result.m44 = matrix1.m41*matrix2.m14 + matrix1.m42*matrix2.m24 + matrix1.m43*matrix2.m34 + matrix1.m44*matrix2.m44;
+            float num16 = (((matrix1.M11 * matrix2.M11) + (matrix1.M12 * matrix2.M21)) + (matrix1.M13 * matrix2.M31)) + (matrix1.M14 * matrix2.M41);
+            float num15 = (((matrix1.M11 * matrix2.M12) + (matrix1.M12 * matrix2.M22)) + (matrix1.M13 * matrix2.M32)) + (matrix1.M14 * matrix2.M42);
+            float num14 = (((matrix1.M11 * matrix2.M13) + (matrix1.M12 * matrix2.M23)) + (matrix1.M13 * matrix2.M33)) + (matrix1.M14 * matrix2.M43);
+            float num13 = (((matrix1.M11 * matrix2.M14) + (matrix1.M12 * matrix2.M24)) + (matrix1.M13 * matrix2.M34)) + (matrix1.M14 * matrix2.M44);
+            float num12 = (((matrix1.M21 * matrix2.M11) + (matrix1.M22 * matrix2.M21)) + (matrix1.M23 * matrix2.M31)) + (matrix1.M24 * matrix2.M41);
+            float num11 = (((matrix1.M21 * matrix2.M12) + (matrix1.M22 * matrix2.M22)) + (matrix1.M23 * matrix2.M32)) + (matrix1.M24 * matrix2.M42);
+            float num10 = (((matrix1.M21 * matrix2.M13) + (matrix1.M22 * matrix2.M23)) + (matrix1.M23 * matrix2.M33)) + (matrix1.M24 * matrix2.M43);
+            float num9 = (((matrix1.M21 * matrix2.M14) + (matrix1.M22 * matrix2.M24)) + (matrix1.M23 * matrix2.M34)) + (matrix1.M24 * matrix2.M44);
+            float num8 = (((matrix1.M31 * matrix2.M11) + (matrix1.M32 * matrix2.M21)) + (matrix1.M33 * matrix2.M31)) + (matrix1.M34 * matrix2.M41);
+            float num7 = (((matrix1.M31 * matrix2.M12) + (matrix1.M32 * matrix2.M22)) + (matrix1.M33 * matrix2.M32)) + (matrix1.M34 * matrix2.M42);
+            float num6 = (((matrix1.M31 * matrix2.M13) + (matrix1.M32 * matrix2.M23)) + (matrix1.M33 * matrix2.M33)) + (matrix1.M34 * matrix2.M43);
+            float num5 = (((matrix1.M31 * matrix2.M14) + (matrix1.M32 * matrix2.M24)) + (matrix1.M33 * matrix2.M34)) + (matrix1.M34 * matrix2.M44);
+            float num4 = (((matrix1.M41 * matrix2.M11) + (matrix1.M42 * matrix2.M21)) + (matrix1.M43 * matrix2.M31)) + (matrix1.M44 * matrix2.M41);
+            float num3 = (((matrix1.M41 * matrix2.M12) + (matrix1.M42 * matrix2.M22)) + (matrix1.M43 * matrix2.M32)) + (matrix1.M44 * matrix2.M42);
+            float num2 = (((matrix1.M41 * matrix2.M13) + (matrix1.M42 * matrix2.M23)) + (matrix1.M43 * matrix2.M33)) + (matrix1.M44 * matrix2.M43);
+            float num = (((matrix1.M41 * matrix2.M14) + (matrix1.M42 * matrix2.M24)) + (matrix1.M43 * matrix2.M34)) + (matrix1.M44 * matrix2.M44);
+            result.m11 = num16;
+            result.m12 = num15;
+            result.m13 = num14;
+            result.m14 = num13;
+            result.m21 = num12;
+            result.m22 = num11;
+            result.m23 = num10;
+            result.m24 = num9;
+            result.m31 = num8;
+            result.m32 = num7;
+            result.m33 = num6;
+            result.m34 = num5;
+            result.m41 = num4;
+            result.m42 = num3;
+            result.m43 = num2;
+            result.m44 = num;
 #endif
 		}
 		
@@ -995,8 +1282,62 @@ namespace Mono.GameMath
 		}
 		
 		public static void Invert (ref Matrix matrix, out Matrix result)
-		{
-			throw new NotImplementedException ();
+		{            
+            float num5 = matrix.M11;
+            float num4 = matrix.M12;
+            float num3 = matrix.M13;
+            float num2 = matrix.M14;
+            float num9 = matrix.M21;
+            float num8 = matrix.M22;
+            float num7 = matrix.M23;
+            float num6 = matrix.M24;
+            float num17 = matrix.M31;
+            float num16 = matrix.M32;
+            float num15 = matrix.M33;
+            float num14 = matrix.M34;
+            float num13 = matrix.M41;
+            float num12 = matrix.M42;
+            float num11 = matrix.M43;
+            float num10 = matrix.M44;
+            float num23 = (num15 * num10) - (num14 * num11);
+            float num22 = (num16 * num10) - (num14 * num12);
+            float num21 = (num16 * num11) - (num15 * num12);
+            float num20 = (num17 * num10) - (num14 * num13);
+            float num19 = (num17 * num11) - (num15 * num13);
+            float num18 = (num17 * num12) - (num16 * num13);
+            float num39 = ((num8 * num23) - (num7 * num22)) + (num6 * num21);
+            float num38 = -(((num9 * num23) - (num7 * num20)) + (num6 * num19));
+            float num37 = ((num9 * num22) - (num8 * num20)) + (num6 * num18);
+            float num36 = -(((num9 * num21) - (num8 * num19)) + (num7 * num18));
+            float num = 1f / ((((num5 * num39) + (num4 * num38)) + (num3 * num37)) + (num2 * num36));
+            result.m11 = num39 * num;
+            result.m21 = num38 * num;
+            result.m31 = num37 * num;
+            result.m41 = num36 * num;
+            result.m12 = -(((num4 * num23) - (num3 * num22)) + (num2 * num21)) * num;
+            result.m22 = (((num5 * num23) - (num3 * num20)) + (num2 * num19)) * num;
+            result.m32 = -(((num5 * num22) - (num4 * num20)) + (num2 * num18)) * num;
+            result.m42 = (((num5 * num21) - (num4 * num19)) + (num3 * num18)) * num;
+            float num35 = (num7 * num10) - (num6 * num11);
+            float num34 = (num8 * num10) - (num6 * num12);
+            float num33 = (num8 * num11) - (num7 * num12);
+            float num32 = (num9 * num10) - (num6 * num13);
+            float num31 = (num9 * num11) - (num7 * num13);
+            float num30 = (num9 * num12) - (num8 * num13);
+            result.m13 = (((num4 * num35) - (num3 * num34)) + (num2 * num33)) * num;
+            result.m23 = -(((num5 * num35) - (num3 * num32)) + (num2 * num31)) * num;
+            result.m33 = (((num5 * num34) - (num4 * num32)) + (num2 * num30)) * num;
+            result.m43 = -(((num5 * num33) - (num4 * num31)) + (num3 * num30)) * num;
+            float num29 = (num7 * num14) - (num6 * num15);
+            float num28 = (num8 * num14) - (num6 * num16);
+            float num27 = (num8 * num15) - (num7 * num16);
+            float num26 = (num9 * num14) - (num6 * num17);
+            float num25 = (num9 * num15) - (num7 * num17);
+            float num24 = (num9 * num16) - (num8 * num17);
+            result.m14 = -(((num4 * num29) - (num3 * num28)) + (num2 * num27)) * num;
+            result.m24 = (((num5 * num29) - (num3 * num26)) + (num2 * num25)) * num;
+            result.m34 = -(((num5 * num28) - (num4 * num26)) + (num2 * num24)) * num;
+            result.m44 = (((num5 * num27) - (num4 * num25)) + (num3 * num24)) * num;
 		}
 		
 		public static Matrix Lerp (Matrix matrix1, Matrix matrix2, float amount)
@@ -1043,8 +1384,67 @@ namespace Mono.GameMath
 		}
 		
 		public static void Transform (ref Matrix value, ref Quaternion rotation, out Matrix result)
-		{
-			throw new NotImplementedException ();
+		{         
+            float num21 = rotation.X + rotation.X;
+            float num11 = rotation.Y + rotation.Y;
+            float num10 = rotation.Z + rotation.Z;
+            float num20 = rotation.W * num21;
+            float num19 = rotation.W * num11;
+            float num18 = rotation.W * num10;
+            float num17 = rotation.X * num21;
+            float num16 = rotation.X * num11;
+            float num15 = rotation.X * num10;
+            float num14 = rotation.Y * num11;
+            float num13 = rotation.Y * num10;
+            float num12 = rotation.Z * num10;
+            float num9 = (1f - num14) - num12;
+            float num8 = num16 - num18;
+            float num7 = num15 + num19;
+            float num6 = num16 + num18;
+            float num5 = (1f - num17) - num12;
+            float num4 = num13 - num20;
+            float num3 = num15 - num19;
+            float num2 = num13 + num20;
+            float num = (1f - num17) - num14;
+            float num37 = ((value.M11 * num9) + (value.M12 * num8)) + (value.M13 * num7);
+            float num36 = ((value.M11 * num6) + (value.M12 * num5)) + (value.M13 * num4);
+            float num35 = ((value.M11 * num3) + (value.M12 * num2)) + (value.M13 * num);
+            float num34 = value.M14;
+            float num33 = ((value.M21 * num9) + (value.M22 * num8)) + (value.M23 * num7);
+            float num32 = ((value.M21 * num6) + (value.M22 * num5)) + (value.M23 * num4);
+            float num31 = ((value.M21 * num3) + (value.M22 * num2)) + (value.M23 * num);
+            float num30 = value.M24;
+            float num29 = ((value.M31 * num9) + (value.M32 * num8)) + (value.M33 * num7);
+            float num28 = ((value.M31 * num6) + (value.M32 * num5)) + (value.M33 * num4);
+            float num27 = ((value.M31 * num3) + (value.M32 * num2)) + (value.M33 * num);
+            float num26 = value.M34;
+            float num25 = ((value.M41 * num9) + (value.M42 * num8)) + (value.M43 * num7);
+            float num24 = ((value.M41 * num6) + (value.M42 * num5)) + (value.M43 * num4);
+            float num23 = ((value.M41 * num3) + (value.M42 * num2)) + (value.M43 * num);
+            float num22 = value.M44;
+#if SIMD
+			r1 = new Vector4f (num37, num36, num35, num34);
+			r2 = new Vector4f (num33, num32, num31, num30);
+			r3 = new Vector4f (num29, num28, num27, num26);
+			r4 = new Vector4f (num25, num24, num23, num22);
+#else
+            result.m11 = num37;
+            result.m12 = num36;
+            result.m13 = num35;
+            result.m14 = num34;
+            result.m21 = num33;
+            result.m22 = num32;
+            result.m23 = num31;
+            result.m24 = num30;
+            result.m31 = num29;
+            result.m32 = num28;
+            result.m33 = num27;
+            result.m34 = num26;
+            result.m41 = num25;
+            result.m42 = num24;
+            result.m43 = num23;
+            result.m44 = num22;
+#endif
 		}
 		
 		public static Matrix Transpose (Matrix matrix)
@@ -1104,25 +1504,38 @@ namespace Mono.GameMath
 			result.r3 = xmm1;
 			result.r4 = xmm4;
 #else
-			result.m11 = matrix.m11;
-			result.m12 = matrix.m21;
-			result.m13 = matrix.m31;
-			result.m14 = matrix.m41;
-			
-			result.m21 = matrix.m12;
-			result.m22 = matrix.m22;
-			result.m23 = matrix.m32;
-			result.m24 = matrix.m42;
-			
-			result.m31 = matrix.m13;
-			result.m32 = matrix.m23;
-			result.m33 = matrix.m33;
-			result.m34 = matrix.m43;
-			
-			result.m41 = matrix.m14;
-			result.m42 = matrix.m24;
-			result.m43 = matrix.m34;
-			result.m44 = matrix.m44;
+            float newM11 = matrix.m11;
+            float newM21 = matrix.m12;
+            float newM31 = matrix.m13;
+            float newM41 = matrix.m14;
+            float newM12 = matrix.m21;
+            float newM22 = matrix.m22;
+            float newM32 = matrix.m23;
+            float newM42 = matrix.m24;
+            float newM13 = matrix.m31;
+            float newM23 = matrix.m32;
+            float newM33 = matrix.m33;
+            float newM43 = matrix.m34;
+            float newM14 = matrix.m41;
+            float newM24 = matrix.m42;
+            float newM34 = matrix.m43;
+            float newM44 = matrix.m44;
+            result.m11 = newM11;
+            result.m12 = newM12;
+            result.m13 = newM13;
+            result.m14 = newM14;
+            result.m21 = newM21;
+            result.m22 = newM22;
+            result.m23 = newM23;
+            result.m24 = newM24;
+            result.m31 = newM31;
+            result.m32 = newM32;
+            result.m33 = newM33;
+            result.m34 = newM34;
+            result.m41 = newM41;
+            result.m42 = newM42;
+            result.m43 = newM43;
+            result.m44 = newM44;
 #endif
 		}
 		

@@ -30,9 +30,15 @@ using System.Runtime.InteropServices;
 using Mono.Simd;
 #endif
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Vector4 : IEquatable<Vector4>
 	{
 #if SIMD
@@ -660,7 +666,15 @@ namespace Mono.GameMath
 		
 		public static void Transform (ref Vector2 position, ref Matrix matrix, out Vector4 result)
 		{
-			throw new NotImplementedException ();
+            float num4 = ((position.X * matrix.M11) + (position.Y * matrix.M21)) + matrix.M41;
+            float num3 = ((position.X * matrix.M12) + (position.Y * matrix.M22)) + matrix.M42;
+            float num2 = ((position.X * matrix.M13) + (position.Y * matrix.M23)) + matrix.M43;
+            float num = ((position.X * matrix.M14) + (position.Y * matrix.M24)) + matrix.M44;
+            result = new Vector4();
+            result.X = num4;
+            result.Y = num3;
+            result.Z = num2;
+            result.W = num;
 		}
 		
 		public static Vector4 Transform (Vector2 value, Quaternion rotation)
@@ -684,7 +698,16 @@ namespace Mono.GameMath
 		
 		public static void Transform (ref Vector3 position, ref Matrix matrix, out Vector4 result)
 		{
-			throw new NotImplementedException ();
+            float num4 = (((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31)) + matrix.M41;
+            float num3 = (((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32)) + matrix.M42;
+            float num2 = (((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33)) + matrix.M43;
+            float num = (((position.X * matrix.M14) + (position.Y * matrix.M24)) + (position.Z * matrix.M34)) + matrix.M44;
+            result = new Vector4();
+            result.X = num4;
+            result.Y = num3;
+            result.Z = num2;
+            result.W = num;
+    
 		}
 		
 		public static Vector4 Transform (Vector3 value, Quaternion rotation)
@@ -708,7 +731,15 @@ namespace Mono.GameMath
 		
 		public static void Transform (ref Vector4 position, ref Matrix matrix, out Vector4 result)
 		{
-			throw new NotImplementedException ();
+			float num4 = (((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31)) + (position.W * matrix.M41);
+            float num3 = (((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32)) + (position.W * matrix.M42);
+            float num2 = (((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33)) + (position.W * matrix.M43);
+            float num = (((position.X * matrix.M14) + (position.Y * matrix.M24)) + (position.Z * matrix.M34)) + (position.W * matrix.M44);
+            result = new Vector4();
+            result.X = num4;
+            result.Y = num3;
+            result.Z = num2;
+            result.W = num;
 		}
 		
 		public static Vector4 Transform (Vector4 value, Quaternion rotation)

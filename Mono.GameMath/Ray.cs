@@ -25,9 +25,15 @@
 // THE SOFTWARE.
 using System;
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Ray : IEquatable<Ray>
 	{
 		public Vector3 Position, Direction;
@@ -81,7 +87,26 @@ namespace Mono.GameMath
 		
 		public void Intersects (ref Plane plane, out Nullable<float> result)
 		{
-			throw new NotImplementedException ();
+            float num2 = ((plane.Normal.X * this.Direction.X) + (plane.Normal.Y * this.Direction.Y)) + (plane.Normal.Z * this.Direction.Z);
+            if (Math.Abs(num2) < 1E-05f)
+            {
+                result = 0;
+            }
+            else
+            {
+                float num3 = ((plane.Normal.X * this.Position.X) + (plane.Normal.Y * this.Position.Y)) + (plane.Normal.Z * this.Position.Z);
+                float num = (-plane.D - num3) / num2;
+                if (num < 0f)
+                {
+                    if (num < -1E-05f)
+                    {
+                        result = 0;
+                        return;
+                    }
+                    result = 0f;
+                }
+                result = new float?(num);
+            }
 		}
 		
 		#endregion

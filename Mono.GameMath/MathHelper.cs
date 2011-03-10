@@ -25,7 +25,11 @@
 // THE SOFTWARE.
 using System;
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
 	public static class MathHelper
 	{

@@ -26,9 +26,15 @@
 using System;
 using System.Collections.Generic;
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct BoundingSphere : IEquatable<BoundingSphere>
 	{
 		public Vector3 Center;

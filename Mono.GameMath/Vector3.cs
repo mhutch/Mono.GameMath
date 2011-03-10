@@ -29,9 +29,15 @@ using System;
 using Mono.Simd;
 #endif
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Vector3 : IEquatable<Vector3>
 	{
 #if SIMD
@@ -687,14 +693,25 @@ namespace Mono.GameMath
 		
 		public static Vector3 Transform (Vector3 position, Matrix matrix)
 		{
-			Vector3 result;
-			Transform (ref position, ref matrix, out result);
+			Vector3 result = new Vector3();
+            Transform(ref position, ref matrix, out result);
 			return result;
 		}
-		
-		public static void Transform (ref Vector3 position, ref Matrix matrix, out Vector3 result)
+				
+        public static void Transform (ref Vector3 position, ref Matrix matrix, out Vector3 result)
 		{
-			throw new NotImplementedException ();
+            float newX = (((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31)) + matrix.M41;
+            float newY = (((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32)) + matrix.M42;
+            float newZ = (((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33)) + matrix.M43;
+#if SIMD
+            result.v4.X = newX;
+            result.v4.Y = newY;
+            result.v4.Z = newZ;
+#else
+            result.x = newX;
+            result.y = newY;
+            result.z = newZ;
+#endif
 		}
 		
 		public static Vector3 Transform (Vector3 value, Quaternion rotation)
@@ -706,7 +723,7 @@ namespace Mono.GameMath
 		
 		public static void Transform (ref Vector3 value, ref Quaternion rotation, out Vector3 result)
 		{
-			throw new NotImplementedException ();
+            result = Transform(value, Matrix.CreateFromQuaternion(rotation));
 		}
 		
 		static void CheckArrayArgs (Vector3[] sourceArray, int sourceIndex, Vector3[] destinationArray,
@@ -774,14 +791,27 @@ namespace Mono.GameMath
 		
 		public static Vector3 TransformNormal (Vector3 normal, Matrix matrix)
 		{
-			Vector3 result;
-			TransformNormal (ref normal, ref matrix, out result);
+			Vector3 result = new Vector3();			
+            result.X = ((normal.X * matrix.M11) + (normal.Y * matrix.M21)) + (normal.Z * matrix.M31);
+            result.Y = ((normal.X * matrix.M12) + (normal.Y * matrix.M22)) + (normal.Z * matrix.M32);
+            result.Z = ((normal.X * matrix.M13) + (normal.Y * matrix.M23)) + (normal.Z * matrix.M33);
 			return result;
 		}
 		
 		public static void TransformNormal (ref Vector3 normal, ref Matrix matrix, out Vector3 result)
-		{
-			throw new NotImplementedException ();
+		{            
+            float newX = ((normal.X * matrix.M11) + (normal.Y * matrix.M21)) + (normal.Z * matrix.M31);
+            float newY = ((normal.X * matrix.M12) + (normal.Y * matrix.M22)) + (normal.Z * matrix.M32);
+            float newZ = ((normal.X * matrix.M13) + (normal.Y * matrix.M23)) + (normal.Z * matrix.M33);
+#if SIMD
+            result.v4.X = newX;
+            result.v4.Y = newY;
+            result.v4.Z = newZ;
+#else
+            result.x = newX;
+            result.y = newY;
+            result.z = newZ;
+#endif
 		}
 		
 		public static void TransformNormal (Vector3[] sourceArray, int sourceIndex, ref Matrix matrix,
