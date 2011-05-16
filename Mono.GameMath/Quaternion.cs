@@ -163,10 +163,10 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 + quaternion2.v4);
 #else
-			result.X = quaternion1.X + quaternion2.X;
-			result.Y = quaternion1.Y + quaternion2.Y;
-			result.Z = quaternion1.Z + quaternion2.Z;
-			result.W = quaternion1.W + quaternion2.W;
+			result.x = quaternion1.x + quaternion2.x;
+			result.y = quaternion1.y + quaternion2.y;
+			result.z = quaternion1.z + quaternion2.z;
+			result.w = quaternion1.w + quaternion2.w;
 #endif
 		}
 		
@@ -185,10 +185,10 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 - quaternion2.v4);
 #else
-			result.X = quaternion1.X - quaternion2.X;
-			result.Y = quaternion1.Y - quaternion2.Y;
-			result.Z = quaternion1.Z - quaternion2.Z;
-			result.W = quaternion1.W - quaternion2.W;
+			result.x = quaternion1.x - quaternion2.x;
+			result.y = quaternion1.y - quaternion2.y;
+			result.z = quaternion1.z - quaternion2.z;
+			result.w = quaternion1.w - quaternion2.w;
 #endif
 		}
 		
@@ -204,11 +204,20 @@ namespace Mono.GameMath
 		
 		public static void Multiply (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
+#if SIMD
 			// TODO: SIMD optimization
-			result.X = quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y;
-			result.Y = quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X;
-			result.Z = quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W;
-			result.W = quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z;
+			result.v4 = new Vector4f (
+				quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y,
+				quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X,
+				quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W,
+				quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z);
+#else
+			result = new Quaternion (
+				quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y,
+				quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X,
+				quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W,
+				quaternion1.W * quaternion2.W - quaternion1.X * quaternion2.X - quaternion1.Y * quaternion2.Y - quaternion1.Z * quaternion2.Z);
+#endif
 		}
 		
 		public static Quaternion Multiply (Quaternion quaternion1, float scaleFactor)
@@ -385,10 +394,14 @@ namespace Mono.GameMath
 		
 		public static void Conjugate (ref Quaternion value, out Quaternion result)
 		{
-			result.X = - value.X;
-			result.Y = - value.Y;
-			result.Z = - value.Z;
-			result.W = value.W;
+#if SIMD
+			result.v4 = new Vector4f (- value.X, - value.Y, - value.Z, value.W);
+#else
+			result.x = - value.x;
+			result.y = - value.y;
+			result.z = - value.z;
+			result.w = value.w;
+#endif
 		}
 
 		public static float Dot (Quaternion quaternion1, Quaternion quaternion2)
