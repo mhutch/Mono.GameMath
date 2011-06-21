@@ -29,9 +29,15 @@ using System;
 using Mono.Simd;
 #endif
 
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct Quaternion
 	{
 #if SIMD
@@ -107,7 +113,43 @@ namespace Mono.GameMath
 		
 		public static void CreateFromRotationMatrix (ref Matrix matrix, out Quaternion result)
 		{
-			throw new NotImplementedException ();
+            float num8 = (matrix.M11 + matrix.M22) + matrix.M33;
+            if (num8 > 0f)
+            {
+                float num = (float)Math.Sqrt((double)(num8 + 1f));
+                result.w = num * 0.5f;
+                num = 0.5f / num;
+                result.x = (matrix.M23 - matrix.M32) * num;
+                result.y = (matrix.M31 - matrix.M13) * num;
+                result.z = (matrix.M12 - matrix.M21) * num;
+            }
+            else if ((matrix.M11 >= matrix.M22) && (matrix.M11 >= matrix.M33))
+            {
+                float num7 = (float)Math.Sqrt((double)(((1f + matrix.M11) - matrix.M22) - matrix.M33));
+                float num4 = 0.5f / num7;
+                result.x = 0.5f * num7;
+                result.y = (matrix.M12 + matrix.M21) * num4;
+                result.z = (matrix.M13 + matrix.M31) * num4;
+                result.w = (matrix.M23 - matrix.M32) * num4;
+            }
+            else if (matrix.M22 > matrix.M33)
+            {
+                float num6 = (float)Math.Sqrt((double)(((1f + matrix.M22) - matrix.M11) - matrix.M33));
+                float num3 = 0.5f / num6;
+                result.x = (matrix.M21 + matrix.M12) * num3;
+                result.y = 0.5f * num6;
+                result.z = (matrix.M32 + matrix.M23) * num3;
+                result.w = (matrix.M31 - matrix.M13) * num3;
+            }
+            else
+            {
+                float num5 = (float)Math.Sqrt((double)(((1f + matrix.M33) - matrix.M11) - matrix.M22));
+                float num2 = 0.5f / num5;
+                result.x = (matrix.M31 + matrix.M13) * num2;
+                result.y = (matrix.M32 + matrix.M23) * num2;
+                result.z = 0.5f * num5;
+                result.w = (matrix.M12 - matrix.M21) * num2;
+            }
 		}
 		
 		public static Quaternion CreateFromYawPitchRoll (float yaw, float pitch, float roll)
@@ -163,7 +205,8 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 + quaternion2.v4);
 #else
-			result.X = quaternion1.X + quaternion2.X;
+            result = new Quaternion();
+            result.X = quaternion1.X + quaternion2.X;
 			result.Y = quaternion1.Y + quaternion2.Y;
 			result.Z = quaternion1.Z + quaternion2.Z;
 			result.W = quaternion1.W + quaternion2.W;
@@ -185,7 +228,8 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 - quaternion2.v4);
 #else
-			result.X = quaternion1.X - quaternion2.X;
+            result = new Quaternion();
+            result.X = quaternion1.X - quaternion2.X;
 			result.Y = quaternion1.Y - quaternion2.Y;
 			result.Z = quaternion1.Z - quaternion2.Z;
 			result.W = quaternion1.W - quaternion2.W;
@@ -205,6 +249,7 @@ namespace Mono.GameMath
 		public static void Multiply (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
 			// TODO: SIMD optimization
+            result = new Quaternion();
 			result.X = quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y;
 			result.Y = quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X;
 			result.Z = quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W;
@@ -385,7 +430,8 @@ namespace Mono.GameMath
 		
 		public static void Conjugate (ref Quaternion value, out Quaternion result)
 		{
-			result.X = - value.X;
+            result = new Quaternion();
+            result.X = - value.X;
 			result.Y = - value.Y;
 			result.Z = - value.Z;
 			result.W = value.W;

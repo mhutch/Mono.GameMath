@@ -26,10 +26,15 @@
 
 using System;
 using System.Collections.Generic;
-
+#if XNA
+namespace Microsoft.Xna.Framework
+#else
 namespace Mono.GameMath
+#endif
 {
-	[Serializable]
+#if !(SILVERLIGHT)
+    [Serializable]
+#endif
 	public struct BoundingBox : IEquatable<BoundingBox>
 	{
 		public Vector3 Min, Max;
