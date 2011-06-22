@@ -535,7 +535,7 @@ namespace Mono.GameMath
 		
 		public bool Equals (Quaternion other)
 		{
-			return other == this;
+			return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z) && w.Equals(other.w);
 		}
 		
 		public override bool Equals (object obj)
@@ -545,7 +545,7 @@ namespace Mono.GameMath
 		
 		public override int GetHashCode ()
 		{
-			return X.GetHashCode () ^ Y.GetHashCode () ^ Z.GetHashCode () ^ W.GetHashCode ();
+			return x.GetHashCode() * (31 * 31 * 31) + y.GetHashCode() * (31 * 31) + z.GetHashCode() * 31 + w.GetHashCode();
 		}
 		
 		public static bool operator == (Quaternion a, Quaternion b)
