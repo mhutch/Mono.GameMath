@@ -632,17 +632,17 @@ namespace Mono.GameMath
 		
 		public bool Equals (Vector2 other)
 		{
-			return x == other.x && y == other.y;
+			return x.Equals(other.x) && y.Equals(other.y);
 		}
 		
 		public override bool Equals (object obj)
 		{
-			return obj is Vector2 && ((Vector2)obj) == this;
+			return obj is Vector2 && this.Equals((Vector2)obj);
 		}
 		
 		public override int GetHashCode ()
 		{
-			return x.GetHashCode () ^ y.GetHashCode ();
+			return x.GetHashCode () * 31 + y.GetHashCode ();
 		}
 		
 		public static bool operator == (Vector2 a, Vector2 b)

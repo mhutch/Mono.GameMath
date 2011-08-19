@@ -4,3 +4,4 @@ obj
 *.pidb
 *.userprefs
 *.suo
+TestResults/

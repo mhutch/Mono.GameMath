@@ -163,6 +163,7 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 + quaternion2.v4);
 #else
+			result = new Quaternion();
 			result.X = quaternion1.X + quaternion2.X;
 			result.Y = quaternion1.Y + quaternion2.Y;
 			result.Z = quaternion1.Z + quaternion2.Z;
@@ -185,6 +186,7 @@ namespace Mono.GameMath
 #if SIMD
 			result = new Quaternion (quaternion1.v4 - quaternion2.v4);
 #else
+			result = new Quaternion();
 			result.X = quaternion1.X - quaternion2.X;
 			result.Y = quaternion1.Y - quaternion2.Y;
 			result.Z = quaternion1.Z - quaternion2.Z;
@@ -205,6 +207,7 @@ namespace Mono.GameMath
 		public static void Multiply (ref Quaternion quaternion1, ref Quaternion quaternion2, out Quaternion result)
 		{
 			// TODO: SIMD optimization
+			result = new Quaternion();
 			result.X = quaternion1.W * quaternion2.X + quaternion1.X * quaternion2.W + quaternion1.Y * quaternion2.Z - quaternion1.Z * quaternion2.Y;
 			result.Y = quaternion1.W * quaternion2.Y - quaternion1.X * quaternion2.Z + quaternion1.Y * quaternion2.W + quaternion1.Z * quaternion2.X;
 			result.Z = quaternion1.W * quaternion2.Z + quaternion1.X * quaternion2.Y - quaternion1.Y * quaternion2.X + quaternion1.Z * quaternion2.W;
@@ -385,7 +388,8 @@ namespace Mono.GameMath
 		
 		public static void Conjugate (ref Quaternion value, out Quaternion result)
 		{
-			result.X = - value.X;
+			result = new Quaternion();
+			result.X = -value.X;
 			result.Y = - value.Y;
 			result.Z = - value.Z;
 			result.W = value.W;
@@ -531,7 +535,7 @@ namespace Mono.GameMath
 		
 		public bool Equals (Quaternion other)
 		{
-			return other == this;
+			return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z) && w.Equals(other.w);
 		}
 		
 		public override bool Equals (object obj)
@@ -541,7 +545,7 @@ namespace Mono.GameMath
 		
 		public override int GetHashCode ()
 		{
-			return X.GetHashCode () ^ Y.GetHashCode () ^ Z.GetHashCode () ^ W.GetHashCode ();
+			return x.GetHashCode() * (31 * 31 * 31) + y.GetHashCode() * (31 * 31) + z.GetHashCode() * 31 + w.GetHashCode();
 		}
 		
 		public static bool operator == (Quaternion a, Quaternion b)

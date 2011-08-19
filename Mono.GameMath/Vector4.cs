@@ -791,13 +791,13 @@ namespace Mono.GameMath
 #if SIMD
 			return v4 == other.v4;
 #else
-			return x == other.x && y == other.y && z == other.z && w == other.w;
+			return x.Equals(other.x) && y.Equals(other.y) && z.Equals(other.z) && w.Equals(other.w);
 #endif
 		}
 		
 		public override bool Equals (object obj)
 		{
-			return obj is Vector4 && ((Vector4)obj) == this;
+			return obj is Vector4 && this.Equals((Vector2)obj);
 		}
 		
 		public override int GetHashCode ()
@@ -824,7 +824,7 @@ namespace Mono.GameMath
 			}
 			
 #else
-			return x.GetHashCode () ^ y.GetHashCode () ^ w.GetHashCode () ^ w.GetHashCode ();
+			return x.GetHashCode () *(31*31*31) + y.GetHashCode () * (31*31) + z.GetHashCode () * 31 + w.GetHashCode ();
 #endif
 		}
 		
