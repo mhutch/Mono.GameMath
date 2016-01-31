@@ -65,7 +65,7 @@ namespace Mono.GameMath
 		{
 		}
 		
-		public Color (Vector3 vector) : this (vector.X, vector.Y, vector.Z)
+		public Color (Vector3 vector)
 		{
 			Vector3 one = Vector3.One, zero = Vector3.Zero;
 			Vector3.Clamp (ref vector, ref zero, ref one, out vector);
