@@ -201,7 +201,7 @@ namespace Mono.GameMath
 		public static void Subtract (ref Vector2 value1, ref Vector2 value2, out Vector2 result)
 		{
 			result.x = value1.x - value2.x;
-			result.y = value1.y - value2.x;
+			result.y = value1.y - value2.y;
 		}
 		
 		#endregion
